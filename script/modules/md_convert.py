@@ -1,0 +1,113 @@
+"""MD Convert Handling"""
+
+import os
+from bs4 import NavigableString, Tag
+from modules.text_handling import formatting_to_md, headers_to_markdown
+from modules.img_handling import replace_images
+from modules.table_handling import table_to_md
+from modules.link_handling import link_to_md
+from modules.link_handling import jira_to_md
+from modules.list_handling import list_to_md
+from modules.code_handling import code_to_md
+from modules.gliffy_handling import gliffy_warning
+from modules.macro_handling import macro_to_md
+from modules.blockquote_handling import blockquote_to_md
+
+element_to_markdown_converter = {
+    "a": link_to_md,
+    "code": code_to_md,
+    "ul": list_to_md,
+    "ol": list_to_md,
+    "blockquote": blockquote_to_md,
+    "img": replace_images,
+    "u": formatting_to_md,
+    "strong": formatting_to_md,
+    "s": formatting_to_md,
+    "em": formatting_to_md,
+    "h1": headers_to_markdown,
+    "h2": headers_to_markdown,
+    "h3": headers_to_markdown,
+    "h4": headers_to_markdown,
+    "h5": headers_to_markdown,
+    "h6": headers_to_markdown,
+}
+
+
+def convert_to_md(element, target_url):
+    """
+    Take a Confluence Page parsed with bs4 and convert each element into Markdown
+
+    Args:
+        element (div element): Main Content of the Confluence page from which every element is read
+        target_url (String): URL to be converted for gliffy warnings
+
+    Returns:
+        String: A complete String with every element of the confluence page
+    """
+    markdown = ""
+
+    if isinstance(element, Tag):
+        converter = element_to_markdown_converter.get(element.name)
+        if converter:
+            # Wenn eine spezifische Funktion zum Konvertieren vorhanden ist, verwende sie
+            conversion_result = converter(element)
+            if conversion_result is not None:
+                markdown += conversion_result
+            else:
+                if element.find(True):  # Wenn Kinder existieren
+                    for child in element.children:
+                        markdown += convert_to_md(child, target_url)
+
+        elif (
+            not element.children
+        ):  # Prüft, ob das Element KEINE weiteren Tag-Elemente als Kinder hat
+            # Füge den Text des Elements hinzu, wenn es keine Kinder hat, die Tags sind
+            text = element.get_text(strip=True)
+            if text:
+                markdown += text
+        elif element.name == "table":
+            markdown += table_to_md(element, target_url)
+
+        # Verarbeite die Kinder des Elements, wenn das Element keine spezifische
+        # Funktion zum Konvertieren hat
+        elif (
+            not converter and element.children
+        ):  # Wenn Kinder existieren, die Tags sind
+            if "class" in element.attrs and "gliffy-container" in " ".join(
+                element["class"]
+            ):
+                markdown += gliffy_warning(target_url)
+            elif "class" in element.attrs and "code" in " ".join(element["class"]):
+                markdown += code_to_md(element)
+            elif "class" in element.attrs and "macro" in " ".join(element["class"]):
+                markdown += "\n" + macro_to_md(element)
+            elif "class" in element.attrs and "jira-issue" in " ".join(
+                element["class"]
+            ):
+                markdown += jira_to_md(element)
+            else:
+                for child in element.children:
+                    markdown += convert_to_md(child, target_url)
+    elif isinstance(element, NavigableString):
+        text = element.strip()
+        if text:
+            # Füge den Text des NavigableString hinzu
+            markdown += text
+
+    return markdown + "\n"
+
+
+def make_md(path, title, content, target_url):
+    """
+    Function to create a .md file and populate it with the content of the given confluence page
+
+    Args:
+        path (String): filepath showing where to save the converted .md file
+        title (String): title of the confluence page to name the .md file
+        content (String): div that hold every element that needs to be converted
+        target_url (String): URL to be converted for gliffy warnings
+    """
+    md = f"# {title}" + "\n\n" + convert_to_md(content, target_url)
+    md_path = os.path.join(f"landing/{path}/", f"{path}.md")
+    with open(md_path, "w", encoding="utf-8") as f:
+        f.write(md)
