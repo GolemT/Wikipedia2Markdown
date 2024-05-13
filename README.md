@@ -93,7 +93,7 @@ Die Folgenden Problem bzw. Funktionalitäten konnten leider nicht umgesetzt werd
 
 Bei Problemen oder Fragen stehen die Folgenden Personen zur Verfügung:
 
-- [Tim Kosleck](tim.kosleck@deutschebahn.com) -> Author
-- [Jonathan Fritzsch](jonathan.fritzsch@deutschebahn.com) -> Author
-- [Markus M Schmieder](markus.m.schmieder@deutschebahn.com) -> Maintainer
-- [Sören Julius Carstensen](soeren-julius.carstensen@deutschebahn.com) -> Maintainer
+- [Tim Kosleck](mailto:tim.kosleck@deutschebahn.com) -> Author
+- [Jonathan Fritzsch](mailto:jonathan.fritzsch@deutschebahn.com) -> Author
+- [Markus M Schmieder](mailto:markus.m.schmieder@deutschebahn.com) -> Maintainer
+- [Sören Julius Carstensen](mailto:soeren-julius.carstensen@deutschebahn.com) -> Maintainer
