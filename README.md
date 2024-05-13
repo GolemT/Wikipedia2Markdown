@@ -16,7 +16,7 @@ Um die benötigten python libraries zu installieren den folgenden Befehl in eine
     pip install bs4 requests dotenv
 ```
 
-Alternativ kann mit der ```requirements.txt``` eine virtuelle Python Umgebung (venv)[https://docs.python.org/3/library/venv.html] erstellt werden.
+Alternativ kann mit der ```requirements.txt``` eine virtuelle Python Umgebung [venv](https://docs.python.org/3/library/venv.html) erstellt werden.
 
 #### Environmental Variables
 
@@ -66,11 +66,11 @@ Nach dem einsetzen der gewünschten URL kann das Script ausgeführt werden. Das 
 
 ## Technologie
 
-Die Markdown Dateien verwenden MDX, weshalb sie in der Lage sind HTML Elemente anzuzeigen. Ursprünglich wurde dieses Skript genutzt, um Confluence Seiten in einer durch (Docusaurus)[https://docusaurus.io/] generierten Dokumentation anzuzeigen. Daher werden bestimmte JSX Elemente in der Markdown verwendet
+Die Markdown Dateien verwenden MDX, weshalb sie in der Lage sind HTML Elemente anzuzeigen. Ursprünglich wurde dieses Skript genutzt, um Confluence Seiten in einer durch [Docusaurus](https://docusaurus.io/) generierten Dokumentation anzuzeigen. Daher werden bestimmte JSX Elemente in der Markdown verwendet
 
 ## Probleme
 
-Die Folgenden Problem bzw. Funktionalitäten konnten leider nicht umgesetzt werden. Dies hängt teils auch mit der späteren Implementierung in (Docusaurus)[https://docusaurus.io/] zusammen.
+Die Folgenden Problem bzw. Funktionalitäten konnten leider nicht umgesetzt werden. Dies hängt teils auch mit der späteren Implementierung in [Docusaurus](https://docusaurus.io/) zusammen.
 
 * **Farbiger Text/Farbige Tabellen**
   * In der Confluence Seite werden für bestimmte Farben so wie spezifische Größen Style-elemente benutzt. Wenn diese einfach importiert werden schimpft docusaurus das wir jsx styling benutzen sollen. Wenn wir allerdings das styling händisch in jsx umwandeln, kriegen wir eine Fehlermeldung das ein Character namens "acorn" nicht verarbeitet werden kann. Somit ist unklar welches styling wirklich gebraucht wird und eine Formattierung nicht möglich
@@ -93,7 +93,7 @@ Die Folgenden Problem bzw. Funktionalitäten konnten leider nicht umgesetzt werd
 
 Bei Problemen oder Fragen stehen die Folgenden Personen zur Verfügung:
 
-- (Tim Kosleck)[tim.kosleck@deutschebahn.com] -> Author
-- (Jonathan Fritzsch)[jonathan.fritzsch@deutschebahn.com] -> Author
-- (Markus M Schmieder)[markus.m.schmieder@deutschebahn.com] -> Maintainer
-- (Sören Julius Carstensen)[soeren-julius.carstensen@deutschebahn.com] -> Maintainer
+- [Tim Kosleck](tim.kosleck@deutschebahn.com) -> Author
+- [Jonathan Fritzsch](jonathan.fritzsch@deutschebahn.com) -> Author
+- [Markus M Schmieder](markus.m.schmieder@deutschebahn.com) -> Maintainer
+- [Sören Julius Carstensen](soeren-julius.carstensen@deutschebahn.com) -> Maintainer
