@@ -23,9 +23,11 @@ def headers_to_markdown(element):
 
         elif element.get_text(strip=True):
             level = int(element.name[1])
-            text = formatting_to_md(element)
+            text = formatting_to_md(element).strip()
+            headertype = "#" * level
+            headertype = headertype.replace(" ", "")
             markdown_header = (
-                "#" * level + " " + text + "\n"
+                headertype + " " + text
             )  # Titel können ebenfalls unterstrichen sein
             return markdown_header
     else:
@@ -46,28 +48,23 @@ def formatting_to_md(element):
     """
     format_symbol = ""
     if element.name == "s":
-        format_symbol += "~~"
+        format_symbol = "~~"
     elif element.name == "strong":
-        format_symbol += "**"
+        format_symbol = "**"
     elif element.name == "u":
-        format_symbol += "<u>"
+        format_symbol = "<u>"
     elif element.name == "em":
-        format_symbol += "_"
+        format_symbol = "_"
 
+    formatted_text = format_symbol
     for child in element.children:
-        if child.name == "s":
-            format_symbol += "~~"
-        if child.name == "strong":
-            format_symbol += "**"
-        if child.name == "u":
-            format_symbol += "<u>"
-        if child.name == "em":
-            format_symbol += "_"
+        if isinstance(child, Tag):
+            formatted_text += formatting_to_md(child)
+        else:
+            formatted_text += escape_html_tags(child.string.strip())
+    formatted_text += format_symbol[::-1].replace(">u<", "</u>")
 
-    md = f""" {format_symbol}
-    {escape_html_tags(element.get_text(strip=True))}
-    {format_symbol[::-1].replace(">u<", "</u>")} """
-    return md
+    return formatted_text.strip()
 
 
 # clean_title: Cleans the title string by using a regular expression to remove specific characters.
