@@ -48,7 +48,7 @@ Eine Beispiel .env Datei mit dem Namen ```.env.example``` liegt im selben Ordner
 
 Das Python Skript kann nun ausgeführt werden.
 
-##### Hinweis!
+##### Hinweis
 
 .env Dateien sind automatisch im gitignore und werden nicht mit gepusht. Sie liegen lokal auf dem eigenen Rechner und werden nicht commited. Die .env Datei wird hier verwendet um das Aufheben des Confluence Keys zu vereinfachen.
 
@@ -57,16 +57,92 @@ Das Python Skript kann nun ausgeführt werden.
 Zur Nutzung des Script muss die zu Konvertierende Seite in Confluence angegeben werden. Dies wird beim ausfuehren des Scripts mit der Flag -u angehängt.
 
 Bsp:
-```
+
+```bash
     python /path/to/convert_main.py -u https://domain.com/confluence_subpage
 ```
 
 Nach dem einsetzen der gewünschten URL kann das Script ausgeführt werden. Das Ergebnis wird als Ordnerstruktur mit allen Assets außer Gliffy Diagrammen unter landing/ angelegt. Von dort aus kann der Ordner an den gewünschten Ort verschoben werden.
 
-
 ## Technologie
 
-Die Markdown Dateien verwenden MDX, weshalb sie in der Lage sind HTML Elemente anzuzeigen. Ursprünglich wurde dieses Skript genutzt, um Confluence Seiten in einer durch [Docusaurus](https://docusaurus.io/) generierten Dokumentation anzuzeigen. Daher werden bestimmte JSX Elemente in der Markdown verwendet
+Die Markdown Dateien verwenden MDX, weshalb sie in der Lage sind HTML Elemente anzuzeigen. Ursprünglich wurde dieses Skript genutzt, um Confluence Seiten in einer durch [Docusaurus](https://docusaurus.io/) generierten Dokumentation anzuzeigen. Daher werden bestimmte JSX Elemente in der Markdown verwendet.
+
+### Markdown Syntax
+
+Hier is eine kurze Ansammlung an Markdown Syntax und schreibweisen.
+
+# Heading 1
+Heading 1
+=========
+## Heading 2
+Heading 2
+---------
+### Heading 3
+#### Heading 4
+##### Heading 5
+###### Heading 6
+
+:::warning Überschrift
+Warning Message 
+(Nur sichtbar in Browser, nicht in VS Code Preview)
+:::
+
+:::danger Überschrift
+Danger Message 
+(Nur sichtbar in Browser, nicht in VS Code Preview)
+:::
+
+:::info Überschrift
+Info Message 
+(Nur sichtbar in Browser, nicht in VS Code Preview)
+:::
+
+* Aufzählung
+  * Eingerückte Aufzählung
+  * Eingerückte Aufzählung
+* Aufzählung
+  1. Eingerückte Nummerierung
+  2. Eingerückte Nummerierung
+* Aufzählung
+
+1. Nummerierte Aufzählung
+    1. Eingerückte Nummerierung
+    2. Eingerückte Nummerierung
+2. Nummerierte Aufzählung
+   * Eingerückte Aufzählung
+   * Eingerückte Aufzählung
+3. Nummerierte Aufzählung
+
+```python
+Code Block
+```
+
+```Code Snippet```
+
+> Zitat:
+>> Lorem ipsum dolor sit amet,
+>>
+>> consectetur adipisici elit
+>
+> — Docusaurus
+
+| Table Header 1                 | Table Header 2                              |
+| ----------------------- | ---------------------------------------- |
+| Table Cell 1        | Table Cell 2  |
+| X        | X  |
+
+**Bold Text**
+
+[Link](https://git.tech.rz.db.de/TimKosleck/confluence2markdown)
+
+### Image
+
+![Image](./static/img/DB_rgb.png)
+
+Separator line
+---
+
 
 ## Probleme
 
@@ -93,7 +169,7 @@ Die Folgenden Problem bzw. Funktionalitäten konnten leider nicht umgesetzt werd
 
 Bei Problemen oder Fragen stehen die Folgenden Personen zur Verfügung:
 
-- [Tim Kosleck](mailto:tim.kosleck@deutschebahn.com) -> Author
-- [Jonathan Fritzsch](mailto:jonathan.fritzsch@deutschebahn.com) -> Author
-- [Markus M Schmieder](mailto:markus.m.schmieder@deutschebahn.com) -> Maintainer
-- [Sören Julius Carstensen](mailto:soeren-julius.carstensen@deutschebahn.com) -> Maintainer
+* [Tim Kosleck](mailto:tim.kosleck@deutschebahn.com) -> Author
+* [Jonathan Fritzsch](mailto:jonathan.fritzsch@deutschebahn.com) -> Author
+* [Markus M Schmieder](mailto:markus.m.schmieder@deutschebahn.com) -> Maintainer
+* [Sören Julius Carstensen](mailto:soeren-julius.carstensen@deutschebahn.com) -> Maintainer
