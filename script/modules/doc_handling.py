@@ -26,7 +26,9 @@ def clean_filename(filename):
     invalid_chars = '<>:"/\\|?*'
     for char in invalid_chars:
         filename = filename.replace(char, "_")
-    return filename
+    parts = filename.split(".")
+    parts[0:-1] = [".".join(parts[0:-1]).replace(".", "")]
+    return ".".join(parts)
 
 
 def get_documents(element, base_url, title):

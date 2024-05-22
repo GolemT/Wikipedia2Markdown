@@ -23,20 +23,16 @@ Alternativ kann mit der ```requirements.txt``` eine virtuelle Python Umgebung [v
 Um sich bei Atlassian authentifizieren zu können wird ein Personal Access Token (PAT) benötigt. Diesen kann man auf Confluence erstellen. Dafür:
 
 1. Auf Confluence anmelden
-
-![alt text](assets/image.png)
+  ![alt text](assets/image.png)
 
 2. Das Profil aufrufen
-
-![alt text](assets/image1.png)
+  ![alt text](assets/image1.png)
 
 3. Unter "Einstellungen" auf die Persönlichen Zugriffstoken
-
-![alt text](assets/image-1.png)
+  ![alt text](assets/image-1.png)
 
 4. Auf "Token erstellen" drücken. Jetzt dem Token einen Namen geben und ein Ablaufdatum setzten.
-
-![alt text](assets/image-2.png)
+  ![alt text](assets/image-2.png)
 
 5. Den Persönlichen Schlüssel kopieren und gut aufbewahren. Im Root Ordner des Projektes eine Datei Names ``.env`` anlegen. In dieser Datei den Token von gerade eben abspeichern. Die Datei sollte nun so aussehen:
 
@@ -56,10 +52,18 @@ Das Python Skript kann nun ausgeführt werden.
 
 Zur Nutzung des Script muss die zu Konvertierende Seite in Confluence angegeben werden. Dies wird beim ausfuehren des Scripts mit der Flag -u angehängt.
 
+Alternativ kann das Script ```convert_helper.py``` genutzt werden. Dieses Script nimmt ein Array an Links und arbeitet dieses ab. Dadurch müssen die URLs nicht einzeln Konvertiert werden.
+
 Bsp:
 
 ```bash
-    python /path/to/convert_main.py -u https://domain.com/confluence_subpage
+  python /path/to/convert_main.py -u https://domain.com/confluence_subpage
+```
+
+oder:
+
+```bash
+  python /path/to/convert_helper-py
 ```
 
 Nach dem einsetzen der gewünschten URL kann das Script ausgeführt werden. Das Ergebnis wird als Ordnerstruktur mit allen Assets außer Gliffy Diagrammen unter landing/ angelegt. Von dort aus kann der Ordner an den gewünschten Ort verschoben werden.

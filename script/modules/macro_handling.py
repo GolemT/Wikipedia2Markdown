@@ -1,11 +1,9 @@
 """Macro Handling"""
 
 from bs4 import Tag, NavigableString
-from modules.text_handling import formatting_to_md
-from modules.img_handling import replace_images
 
 
-def extract_text_recursively(element):
+def extract_text_recursively(element, target_url):
     """
     Extract text from all child elements recursively, handling specific tags appropriately.
 
@@ -19,9 +17,10 @@ def extract_text_recursively(element):
     for child in element.children:
         match child:
             case NavigableString() as ns:
-                if ns.name == 'code':
+                if ns.name == "code":
                     from modules.code_handling import code_to_md
-                    text += ' ' + code_to_md(ns)
+
+                    text += " " + code_to_md(ns)
                 else:
                     text += ns.strip() + " "
             case Tag() as tag:
@@ -32,24 +31,28 @@ def extract_text_recursively(element):
                         text += f"## {tag.get_text(strip=True)} \n\n"
                     case "ul":
                         from modules.list_handling import list_to_md
-                        text += "\n" + list_to_md(tag)
+
+                        text += "\n" + list_to_md(tag, target_url)
                     case "a":
                         from modules.link_handling import link_to_md
+
                         text += " " + link_to_md(tag)
                     case "img":
                         from modules.img_handling import replace_images
+
                         text += " " + replace_images(tag)
                     case "u" | "strong" | "em" | "s":
                         from modules.text_handling import formatting_to_md
+
                         text += " " + formatting_to_md(tag)
                     case _:
-                        text += extract_text_recursively(tag)
+                        text += extract_text_recursively(tag, target_url)
             case _:
-                text += extract_text_recursively(child)
+                text += extract_text_recursively(child, target_url)
     return text
 
 
-def macro_to_md(element):
+def macro_to_md(element, target_url):
     """
     Converts Confluence macro-styled elements to Markdown based on their class attributes.
     Handles specific macro types like warning, error, and info by prepending them with
@@ -80,7 +83,7 @@ def macro_to_md(element):
             symbol = ""  # Confluence hat komische macros die nichts machen/nicht dargestellt werden
 
     md = f"\n{symbol}{macro_type}\n"
-    content = extract_text_recursively(element)
+    content = extract_text_recursively(element, target_url)
     # Jede Zeile des Inhalts einrücken
     indented_content = "\n    ".join(content.splitlines())
     md += indented_content

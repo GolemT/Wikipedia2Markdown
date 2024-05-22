@@ -32,6 +32,22 @@ header = get_header()
 response = requests.get(target_url, headers=header, timeout=6000)
 
 
+def truncate_string(string, max_length=50):
+    """
+    Truncate the input string to a specified maximum length.
+
+    Args:
+        string (str): The input string to be truncated.
+        max_length (int): The maximum length of the truncated string.
+
+    Returns:
+        str: The truncated string.
+    """
+    if len(string) <= max_length:
+        return string
+    return string[:max_length].rstrip()
+
+
 def url_to_html():
     """
     Fetches the HTML content of the target URL using requests and
@@ -48,16 +64,17 @@ def url_to_html():
         soup.find("h1").get_text(strip=True)
     )  # Die Datei soll den Titel nur intern haben
     global path
-    path = clean_str(
-        str(soup.find("h1").get_text(strip=True))
+    path = clean_str(str(soup.find("h1").get_text(strip=True))).replace(
+        ".", ""
     )  # Path soll keine Sonderzeichen enthalten
+    path = truncate_string(path)  # Truncate path
 
     try:
         os.makedirs(f"landing/{path}/assets")
         return soup.find("div", id="main-content")
     except OSError as e:
-        # Handle other OS-related errors
-        raise OSError(f"Failed to create the directory '{path}': {e}")
+        print("folder already exists")
+        exit()
 
 
 # run stuff

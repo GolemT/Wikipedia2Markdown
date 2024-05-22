@@ -22,12 +22,15 @@ def link_to_md(element):
 
     else:
         text = element.get_text(strip=True)
-        url = element.get("href", "")
+        if element.get("href", ""):
+            url = element.get("href", "")
+        else:
+            url = "nolink"
 
         if "@" in text:
-            md_link = f" [{text}](mailto:{text})  "
+            md_link = f" [{text}](mailto:{text})"
         else:
-            md_link = f" [{text}]({url}) "
+            md_link = f"[{text}]({url})"
 
     return md_link
 

@@ -1,15 +1,22 @@
 """List Handling"""
 
-from bs4 import Tag, NavigableString
+from bs4 import NavigableString, Tag
+from modules.text_handling import (
+    formatting_to_md,
+    headers_to_markdown,
+    escape_html_tags,
+)
+from modules.img_handling import replace_images
 from modules.link_handling import link_to_md
+from modules.link_handling import jira_to_md
 from modules.code_handling import code_to_md
 from modules.macro_handling import macro_to_md
 from modules.blockquote_handling import blockquote_to_md
-from modules.text_handling import formatting_to_md
-from modules.img_handling import replace_images
+from modules.gliffy_handling import gliffy_warning
+from modules.table_handling import table_to_md
 
 
-def list_to_md(element, ebene=0):
+def list_to_md(input, target_url, ebene=0):
     """
     Converts a list element on the Confluence Page to markdown
 
@@ -21,62 +28,99 @@ def list_to_md(element, ebene=0):
         String: Markdown Syntax for Lists
     """
 
-    liste = ""
-    einrueckung = "   " * ebene  # Verwendet Leerzeichen für die Einrückung
+    if input.name == "ol":
+        return ordered_list_to_md(input, target_url, ebene)
 
-    for li in element.find_all(
-        "li", recursive=False
+    liste = ""
+    einrueckung = "  " * ebene  # Verwendet Leerzeichen für die Einrückung
+
+    for element in input.find_all(
+        recursive=False
     ):  # Verhindert, dass tiefer liegende <li> direkt verarbeitet werden
-        item = search_child(li, ebene)
+        item = search_child(element, target_url, ebene)
         # Füge den Markdown für das aktuelle Element hinzu, mit Einrückung und ggf. Unterlisten
-        liste += f"{einrueckung}* {item}\n"
+        if element.name != "li":
+            liste += f"{einrueckung} {item}\n"
+        else:
+            liste += f"{einrueckung}* {item}\n"
 
     return liste
 
 
-def search_child(element, ebene=0):
-    """
-    extract child elements recursively and return the text within
+def search_child(element, target_url, depth=0):
 
-    Args:
-        element (HTML element): Any HTML element that might be in a list
-        ebene (int, optional): Depth of the list. Defaults to 0.
+    element_to_markdown_converter = {
+        "a": link_to_md,
+        "code": code_to_md,
+        "blockquote": blockquote_to_md,
+        "img": replace_images,
+        "u": formatting_to_md,
+        "strong": formatting_to_md,
+        "s": formatting_to_md,
+        "em": formatting_to_md,
+        "h1": headers_to_markdown,
+        "h2": headers_to_markdown,
+        "h3": headers_to_markdown,
+        "h4": headers_to_markdown,
+        "h5": headers_to_markdown,
+        "h6": headers_to_markdown,
+    }
 
-    Returns:
-        String: Text of the child elements
-    """
-    text = ""
-    for child in element.contents:
-        if isinstance(child, NavigableString):
-            text += child.strip() + " "
-        elif isinstance(child, Tag):
-            match child.name:
-                case 'h1':
-                    text += f'# {child.get_text(strip=True)} \n\n'
-                case 'h2':
-                    text += f'## {child.get_text(strip=True)} \n\n'
-                case 'ul' | 'ol':
-                    text += '\n' + list_to_md(child, ebene+1)
-                case 'a':
-                    text += link_to_md(child)
-                case 'br':
-                    text += '\n'
-                case 'strong' | 'em' | 's' | 'u':
-                    text += formatting_to_md(child)
-                case 'img':
-                    text += replace_images(child) + " "
-                case 'blockquote':
-                    text += blockquote_to_md(child)
-                case _:
-                    if 'class' in child.attrs:
-                        match ' '.join(child['class']):
-                            case classes if 'jira' in classes:
-                                pass
-                            case classes if 'macro' in classes:
-                                if 'code' not in classes:
-                                    text += '\n' + macro_to_md(child)
-                                else:
-                                    text += code_to_md(child)
-                            case _:
-                                text += search_child(child, ebene)  # Recursively process content
-    return text
+    markdown = ""
+
+    if isinstance(element, Tag):
+        converter = element_to_markdown_converter.get(element.name)
+        if converter:
+            conversion_result = converter(element)
+            if conversion_result is not None:
+                markdown += conversion_result
+        elif not element.children:
+            text = element.get_text(strip=True)
+            if text:
+                markdown += text
+        elif element.name == "table":
+            markdown += table_to_md(element, target_url)
+        elif element.name == "ul":
+            markdown += "\n" + list_to_md(element, target_url, depth + 1)
+        elif element.name == "ol":
+            markdown += "\n" + ordered_list_to_md(element, target_url, depth + 1)
+        elif not converter and element.children:
+            if "class" in element.attrs and "gliffy-container" in " ".join(
+                element["class"]
+            ):
+                markdown += gliffy_warning(target_url)
+            elif "class" in element.attrs and "code" in " ".join(element["class"]):
+                markdown += code_to_md(element)
+            elif "class" in element.attrs and "macro" in " ".join(element["class"]):
+                markdown += "\n" + macro_to_md(element, target_url)
+            elif "class" in element.attrs and "jira-issue" in " ".join(
+                element["class"]
+            ):
+                markdown += jira_to_md(element)
+            else:
+                for child in element.children:
+                    markdown += search_child(child, target_url, depth)
+    elif isinstance(element, NavigableString):
+        text = element.strip()
+        text = escape_html_tags(text)
+        if text:
+            markdown += text
+
+    return markdown
+
+
+def ordered_list_to_md(input, target_url, depth):
+    liste = ""
+    einrueckung = "   " * depth  # Verwendet Leerzeichen für die Einrückung
+    number = 1
+    for element in input.find_all(
+        recursive=False
+    ):  # Verhindert, dass tiefer liegende <li> direkt verarbeitet werden
+        item = search_child(element, target_url, depth)
+        if element.name != "li":
+            liste += f"{einrueckung} {item}\n"
+        else:
+            liste += f"{einrueckung}{number}. {item}\n"
+            number += 1
+
+    return liste

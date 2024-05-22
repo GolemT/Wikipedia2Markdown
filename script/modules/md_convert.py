@@ -2,7 +2,11 @@
 
 import os
 from bs4 import NavigableString, Tag
-from modules.text_handling import formatting_to_md, headers_to_markdown
+from modules.text_handling import (
+    formatting_to_md,
+    headers_to_markdown,
+    escape_html_tags,
+)
 from modules.img_handling import replace_images
 from modules.table_handling import table_to_md
 from modules.link_handling import link_to_md
@@ -50,7 +54,10 @@ def convert_to_md(element, target_url):
         converter = element_to_markdown_converter.get(element.name)
         if converter:
             # Wenn eine spezifische Funktion zum Konvertieren vorhanden ist, verwende sie
-            conversion_result = converter(element)
+            if converter == list_to_md:
+                conversion_result = converter(element, target_url)
+            else:
+                conversion_result = converter(element)
             if conversion_result is not None:
                 markdown += conversion_result
             else:
@@ -80,7 +87,7 @@ def convert_to_md(element, target_url):
             elif "class" in element.attrs and "code" in " ".join(element["class"]):
                 markdown += code_to_md(element)
             elif "class" in element.attrs and "macro" in " ".join(element["class"]):
-                markdown += "\n" + macro_to_md(element)
+                markdown += "\n" + macro_to_md(element, target_url)
             elif "class" in element.attrs and "jira-issue" in " ".join(
                 element["class"]
             ):
@@ -90,6 +97,7 @@ def convert_to_md(element, target_url):
                     markdown += convert_to_md(child, target_url)
     elif isinstance(element, NavigableString):
         text = element.strip()
+        text = escape_html_tags(text)
         if text:
             # Füge den Text des NavigableString hinzu
             markdown += text

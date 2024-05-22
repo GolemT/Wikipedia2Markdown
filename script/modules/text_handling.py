@@ -24,10 +24,12 @@ def headers_to_markdown(element):
         elif element.get_text(strip=True):
             level = int(element.name[1])
             text = formatting_to_md(element).strip()
-            headertype = "#" * level
+            headertype = (
+                "#" + "#" * level
+            )  # atleast 2 hashtags because in md only the Main Title can have one
             headertype = headertype.replace(" ", "")
             markdown_header = (
-                headertype + " " + text
+                headertype + " " + text + "\n"
             )  # Titel können ebenfalls unterstrichen sein
             return markdown_header
     else:

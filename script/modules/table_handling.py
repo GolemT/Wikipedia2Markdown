@@ -28,28 +28,33 @@ def table_to_md(table, target_url):
     if table and "style" in table.attrs:
         del table["style"]
 
-    to_process = table.find_all(True)  # Find all tags beneath the table
+    to_process = table.find_all(True)
 
     for element in to_process:
-        if element.has_attr("style"):
-            del element["style"]
+        if element.attrs:
+            if element.has_attr("style"):
+                del element["style"]
 
         if element.name == "img":
             element.replace_with(replace_images(element))
         elif element.name == "br":
-            element.decompose()
+            replacement = "\n"
+            if element.children:
+                replacement = element.get_text()
+            element.replace_with(replacement)
         elif element.name == "table":
             table_text = table_to_md(element, target_url)
             inner_table = BeautifulSoup(table_text, "html.parser")
             element.replace_with(inner_table)
         elif element.name == "a":
             element.replace_with(link_to_md(element))
-        elif "class" in element.attrs and "jira-issue" in " ".join(element["class"]):
-            element.replace_with(jira_to_md(element))
-        elif "class" in element.attrs and "gliffy-container" in " ".join(
-            element["class"]
-        ):
-            element.replace_with(gliffy_warning(target_url))
+        elif element.attrs:
+            if "class" in element.attrs and "jira-issue" in " ".join(element["class"]):
+                element.replace_with(jira_to_md(element))
+            elif "class" in element.attrs and "gliffy-container" in " ".join(
+                element["class"]
+            ):
+                element.replace_with(gliffy_warning(target_url))
         elif isinstance(element, NavigableString):
             cleaned_text = " ".join(element.string.split())
             element.replace_with(cleaned_text)

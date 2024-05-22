@@ -15,4 +15,4 @@ def gliffy_warning(url):
     """
 
     return f""":::warning Achtung
-    Hier fehlt das Gliffy File um das Diagramm anpassen zu können. Bitte gehe auf die [Confluence Seite]({url}), lade das .gliffy file herunter, füge es dem Ordner ``./assets`` hinzu (neben dieser .md Datei) und entferne diesen Hinweis! \n:::"""
+    Hier fehlt das Gliffy File um das Diagramm anpassen zu können. Bitte gehe auf die [Confluence Seite]({url}), lade das .gliffy file herunter, füge es dem Ordner ``./assets`` hinzu (neben dieser .md Datei) und entferne diesen Hinweis!\n:::"""
