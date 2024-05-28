@@ -62,11 +62,11 @@ def url_to_html():
     global title
     title = str(
         soup.find("h1").get_text(strip=True)
-    )  # Die Datei soll den Titel nur intern haben
+    )  # The file should have the title only internally
     global path
     path = clean_str(str(soup.find("h1").get_text(strip=True))).replace(
         ".", ""
-    )  # Path soll keine Sonderzeichen enthalten
+    )  # Path should not contain special characters
     path = truncate_string(path)  # Truncate path
 
     try:
@@ -77,7 +77,7 @@ def url_to_html():
         exit()
 
 
-# run stuff
+# run conversion
 content = url_to_html()
 get_images(content, base_url, path)
 get_documents(content, base_url, path)

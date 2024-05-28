@@ -86,7 +86,7 @@ def replace_images(element):
     directory = f"./assets/{img_name}"
     md_img = f" ![{img_name}]({directory})"
 
-    # Irgendein Idiot hat dem Image kinder gegeben. #Kindergeld
+    # Some Image Elements have other HTML Elements as Children
     text = ""
     if element.children:
         for child in element.children:

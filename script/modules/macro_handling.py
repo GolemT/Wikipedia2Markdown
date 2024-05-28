@@ -80,11 +80,11 @@ def macro_to_md(element, target_url):
             macro_type = "info"
             symbol = ":::"
         else:
-            symbol = ""  # Confluence hat komische macros die nichts machen/nicht dargestellt werden
+            symbol = ""  # Confluence has macros which don't do anything and don't get displayed
 
     md = f"\n{symbol}{macro_type}\n"
     content = extract_text_recursively(element, target_url)
-    # Jede Zeile des Inhalts einrücken
+    # indent every line of content
     indented_content = "\n    ".join(content.splitlines())
     md += indented_content
 

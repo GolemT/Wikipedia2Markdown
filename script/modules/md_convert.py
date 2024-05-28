@@ -53,7 +53,7 @@ def convert_to_md(element, target_url):
     if isinstance(element, Tag):
         converter = element_to_markdown_converter.get(element.name)
         if converter:
-            # Wenn eine spezifische Funktion zum Konvertieren vorhanden ist, verwende sie
+            # The list function needs 2 Arguments instead of 1
             if converter == list_to_md:
                 conversion_result = converter(element, target_url)
             else:
@@ -61,22 +61,20 @@ def convert_to_md(element, target_url):
             if conversion_result is not None:
                 markdown += conversion_result
             else:
-                if element.find(True):  # Wenn Kinder existieren
+                if element.find(True):  # If there are other HTML children
                     for child in element.children:
                         markdown += convert_to_md(child, target_url)
 
         elif (
             not element.children
-        ):  # Prüft, ob das Element KEINE weiteren Tag-Elemente als Kinder hat
-            # Füge den Text des Elements hinzu, wenn es keine Kinder hat, die Tags sind
+        ):  # If there are no other Tag Children simply get the text from the element
             text = element.get_text(strip=True)
             if text:
                 markdown += text
         elif element.name == "table":
             markdown += table_to_md(element, target_url)
 
-        # Verarbeite die Kinder des Elements, wenn das Element keine spezifische
-        # Funktion zum Konvertieren hat
+        # If no Converter function is available, handle specific cases and search the children
         elif (
             not converter and element.children
         ):  # Wenn Kinder existieren, die Tags sind
@@ -103,7 +101,7 @@ def convert_to_md(element, target_url):
         text = element.strip()
         text = escape_html_tags(text)
         if text:
-            # Füge den Text des NavigableString hinzu
+            # Add the text of the NavigableString
             markdown += text
 
     return markdown + "\n"

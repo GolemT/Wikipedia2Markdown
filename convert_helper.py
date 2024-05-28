@@ -1,8 +1,6 @@
 import subprocess
 
-sites = [
-    "https://cdp.jaas.service.deutschebahn.com/confluence/display/dmp/Azure+Consumption+API+abfragen"
-]
+sites = [""]
 
 for element in sites:
     subprocess.run(
