@@ -1,0 +1,5 @@
+version: v1
+license: Apache 2.0
+contacts: tim.kosleck@deutschebahn.com
+confidentiality: internal
+protected-branches: main
