@@ -8,7 +8,7 @@ import argparse
 from urllib.parse import urlparse
 import requests
 from bs4 import BeautifulSoup
-from modules.auth import get_header
+#from modules.auth import get_header
 from modules.img_handling import get_images
 from modules.md_convert import make_md
 from modules.url_handling import url_check
@@ -27,9 +27,9 @@ target_url = url_check(str(arg.url))
 base_url = f"{urlparse(target_url).scheme}://{urlparse(target_url).netloc}"
 title = ""
 path = ""
-header = get_header()
+#header = get_header()
 
-response = requests.get(target_url, headers=header, timeout=6000)
+response = requests.get(target_url, timeout=6000)
 
 
 def truncate_string(string, max_length=50):

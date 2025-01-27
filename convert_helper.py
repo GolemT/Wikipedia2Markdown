@@ -1,6 +1,6 @@
 import subprocess
 
-sites = [""]
+sites = ["https://de.wikipedia.org/wiki/Formel_1"]
 
 for element in sites:
     subprocess.run(
