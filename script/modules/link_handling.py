@@ -1,6 +1,6 @@
 """Link Handling"""
 
-from doc_handling import replace_doc
+from script.modules.doc_handling import replace_doc
 
 
 def link_to_md(element):

@@ -3,10 +3,7 @@
 import os
 from urllib.parse import unquote
 import requests
-from text_handling import clean_str
-#from modules.auth import get_header
-
-#header = get_header()
+from script.modules.text_handling import clean_str
 
 
 def clean_filename(filename):
