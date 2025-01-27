@@ -2,12 +2,9 @@
 
 import os
 import requests
-from text_handling import clean_str, formatting_to_md
-#from modules.auth import get_header
+from script.modules.text_handling import clean_str, formatting_to_md
 
 classes = ["avatar", "gliffy", "emoticons", "userLogo "]
-
-#header = get_header()
 
 
 def check_class(element):
