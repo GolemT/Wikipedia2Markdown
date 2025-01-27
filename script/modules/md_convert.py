@@ -3,7 +3,7 @@
 import os
 from bs4 import NavigableString, Tag
 from script.modules.img_handling import replace_images
-from script.modules.text_handling import formatting_to_md, headers_to_markdown
+from script.modules.text_handling import formatting_to_md, headers_to_markdown, escape_html_tags
 from script.modules.table_handling import table_to_md
 from script.modules.link_handling import link_to_md
 from script.modules.link_handling import jira_to_md
