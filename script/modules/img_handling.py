@@ -3,11 +3,11 @@
 import os
 import requests
 from modules.text_handling import clean_str, formatting_to_md
-from modules.auth import get_header
+#from modules.auth import get_header
 
 classes = ["avatar", "gliffy", "emoticons", "userLogo "]
 
-header = get_header()
+#header = get_header()
 
 
 def check_class(element):
@@ -56,7 +56,7 @@ def get_images(element, base_url, title):
                 index = img_url.find("?")
                 img_url = img_url[:index]
 
-            img_data = requests.get(img_url, headers=header, timeout=6000).content
+            img_data = requests.get(img_url, timeout=6000).content
             img_name = clean_str(
                 img_url.split("/")[-1]
             )  # Get the last bit of the URL as name

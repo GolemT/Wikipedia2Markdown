@@ -4,9 +4,9 @@ import os
 from urllib.parse import unquote
 import requests
 from modules.text_handling import clean_str
-from modules.auth import get_header
+#from modules.auth import get_header
 
-header = get_header()
+#header = get_header()
 
 
 def clean_filename(filename):
