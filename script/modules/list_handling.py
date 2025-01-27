@@ -1,19 +1,19 @@
 """List Handling"""
 
 from bs4 import NavigableString, Tag
-from modules.text_handling import (
+from text_handling import (
     formatting_to_md,
     headers_to_markdown,
     escape_html_tags,
 )
-from modules.img_handling import replace_images
-from modules.link_handling import link_to_md
-from modules.link_handling import jira_to_md
-from modules.code_handling import code_to_md
-from modules.macro_handling import macro_to_md
-from modules.blockquote_handling import blockquote_to_md
-from modules.gliffy_handling import gliffy_warning
-from modules.table_handling import table_to_md
+from img_handling import replace_images
+from link_handling import link_to_md
+from link_handling import jira_to_md
+from code_handling import code_to_md
+from macro_handling import macro_to_md
+from blockquote_handling import blockquote_to_md
+from gliffy_handling import gliffy_warning
+from table_handling import table_to_md
 
 
 def list_to_md(input, target_url, ebene=0):

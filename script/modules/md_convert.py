@@ -2,20 +2,20 @@
 
 import os
 from bs4 import NavigableString, Tag
-from modules.text_handling import (
+from text_handling import (
     formatting_to_md,
     headers_to_markdown,
     escape_html_tags,
 )
-from modules.img_handling import replace_images
-from modules.table_handling import table_to_md
-from modules.link_handling import link_to_md
-from modules.link_handling import jira_to_md
-from modules.list_handling import list_to_md
-from modules.code_handling import code_to_md
-from modules.gliffy_handling import gliffy_warning
-from modules.macro_handling import macro_to_md
-from modules.blockquote_handling import blockquote_to_md
+from img_handling import replace_images
+from table_handling import table_to_md
+from link_handling import link_to_md
+from link_handling import jira_to_md
+from list_handling import list_to_md
+from code_handling import code_to_md
+from gliffy_handling import gliffy_warning
+from macro_handling import macro_to_md
+from blockquote_handling import blockquote_to_md
 
 element_to_markdown_converter = {
     "a": link_to_md,

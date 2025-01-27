@@ -2,7 +2,7 @@
 
 import os
 import requests
-from modules.text_handling import clean_str, formatting_to_md
+from text_handling import clean_str, formatting_to_md
 #from modules.auth import get_header
 
 classes = ["avatar", "gliffy", "emoticons", "userLogo "]

@@ -71,7 +71,7 @@ def url_to_html():
 
     try:
         os.makedirs(f"landing/{path}/assets")
-        return soup.find("div", id="main-content")
+        return soup.find("div", id="mw-content-ltr mw-parser-output")
     except OSError as e:
         print("folder already exists")
         exit()
