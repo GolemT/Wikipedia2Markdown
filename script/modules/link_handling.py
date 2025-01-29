@@ -1,6 +1,7 @@
 """Link Handling"""
 
-from modules.doc_handling import replace_doc
+from script.modules.doc_handling import replace_doc
+from script.modules.img_handling import replace_images
 
 
 def link_to_md(element):
@@ -17,12 +18,16 @@ def link_to_md(element):
         String: Markdown Syntax for Links
     """
 
+    md_link = ""
+
     if "confluence-embedded-file" in element.get("class", []):
         md_link = replace_doc(element)
-
     else:
         text = element.get_text(strip=True)
         if element.get("href", ""):
+            if "Datei:" in element.get("href", ""): # Images are also made into Links
+                child = element.find("img")
+                md_link = replace_images(child)
             url = element.get("href", "")
         else:
             url = "nolink"
