@@ -44,7 +44,7 @@ def get_images(element, base_url, title):
         if not check_class(image):
 
             if "://" not in str(image.attrs.get("src")):
-                img_url = base_url + str(image.attrs.get("src"))
+                img_url = "https:" + str(image.attrs.get("src"))
             else:
                 img_url = str(image.attrs.get("src"))
 
@@ -57,7 +57,13 @@ def get_images(element, base_url, title):
             img_name = clean_str(
                 img_url.split("/")[-1]
             )  # Get the last bit of the URL as name
-            img_path = os.path.join(f"landing/{title}/assets", img_name)
+            if len(img_name) > 15:
+                img_name = img_name[:15] + img_name[-4:]
+            img_path = os.path.join(f"landing/{title}/assets/", img_name)
+
+            print(img_url)
+            print(img_path)
+            print(img_name)
 
             with open(img_path, "wb") as f:
                 f.write(img_data)
