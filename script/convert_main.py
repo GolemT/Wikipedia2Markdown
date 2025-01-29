@@ -78,8 +78,6 @@ def url_to_html():
 
 # run conversion
 content = url_to_html()
-print(content)
-print("------------------------------------")
 get_images(content, base_url, path)
 get_documents(content, base_url, path)
 make_md(path, title, content, target_url)

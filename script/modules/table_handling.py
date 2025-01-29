@@ -47,7 +47,6 @@ def table_to_md(table, target_url):
             inner_table = BeautifulSoup(table_text, "html.parser")
             element.replace_with(inner_table)
         elif element.name == "a":
-            print(element)
             element.replace_with(link_to_md(element))
         elif element.attrs:
             if "class" in element.attrs and "jira-issue" in " ".join(element["class"]):
