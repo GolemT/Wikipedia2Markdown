@@ -1,21 +1,20 @@
 import subprocess
 import customtkinter
-import markdown
 from tkinter import scrolledtext
 import os
 
 customtkinter.set_appearance_mode("System")
-customtkinter.set_default_color_theme("green")
+customtkinter.set_default_color_theme("blue")
 
 app = customtkinter.CTk()
 app.geometry("720x480")
-app.title("WikiConvert")
+app.title("Wikipedia2Markdown")
 
 folder_path = os.path.abspath("./landing")
 convert_script_path = os.path.abspath("./script/convert_main.py")
 
 linkList = []
-html_frames = {}
+html_frames = []
 
 def convert(linklist):
     for element in linklist:
@@ -26,10 +25,8 @@ def convert(linklist):
                 text=True,
                 check=True
             )
-            print(result.stdout)
         except subprocess.CalledProcessError as e:
             print(f"Error converting {element}: {e}")
-            print(e.stderr)
             return False
         except FileNotFoundError:
             print(f"convert_main.py not found at {convert_script_path}")
@@ -61,7 +58,6 @@ def display_markdown(filepath, tab_name):
 def get_link():
     text_link = link.get()
     linkList.append(text_link)
-    print(text_link)
     print(linkList)
     link.delete(0, customtkinter.END)
 
@@ -99,18 +95,16 @@ def convert_link():
                 label.pack()
                 print("Conversion failed. Check logs for errors.")
         except Exception as e:
-
             print(f"An error occurred: {e}")
 
         del linkList[:]
 
     else:
         label.pack()
-        print("No links provided")
 
 link = customtkinter.CTkEntry(app, placeholder_text="Insert a Wikipedia Link here", width=200, height=40)
-button = customtkinter.CTkButton(app, text="Add Link to List", command=get_link)
-button2 = customtkinter.CTkButton(app, text="Convert", command=convert_link)
+button = customtkinter.CTkButton(app, text="Add Link to List", command=get_link, fg_color="#623CEA")
+button2 = customtkinter.CTkButton(app, text="Convert", command=convert_link, fg_color="#623CEA")
 label = customtkinter.CTkLabel(app, text="No links provided", fg_color="transparent", text_color="red")
 
 link.pack(padx=30, pady=30)
