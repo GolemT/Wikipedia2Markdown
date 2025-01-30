@@ -1,7 +1,7 @@
 import subprocess
 import customtkinter
 import markdown
-from tkinterweb import HtmlFrame
+from tkinter import scrolledtext
 import os
 
 customtkinter.set_appearance_mode("System")
@@ -40,17 +40,18 @@ def display_markdown(filepath, tab_name):
     try:
         with open(filepath, "r", encoding="utf-8") as f:
             markdown_content = f.read()
-            html_content = markdown.markdown(markdown_content)
 
-            if tab_name not in html_frames:  # Correct check
-                app.tabview.add(tab_name)
-                frame = HtmlFrame(app.tabview.tab(tab_name))
-                frame.pack(fill="both", expand=True)
-                html_frames[tab_name] = frame # Store the frame with the tab name as the key.
-            else:
-                frame = html_frames[tab_name] #Retrieve the frame using the tab name as the key
+        if tab_name not in html_frames:  # Use html_frames for consistency
+            app.tabview.add(tab_name)
+            text_widget = scrolledtext.ScrolledText(app.tabview.tab(tab_name), wrap=customtkinter.WORD)
+            text_widget.pack(fill="both", expand=True)
+            html_frames[tab_name] = text_widget
+        else:
+            text_widget = html_frames[tab_name]
 
-            frame.set_content(html_content)
+        text_widget.delete("1.0", customtkinter.END)
+        text_widget.insert(customtkinter.END, markdown_content)  # Insert raw Markdown
+        text_widget.config(state=customtkinter.DISABLED)  # Make it read-only
 
     except FileNotFoundError:
         print(f"Markdown file not found: {filepath}")
