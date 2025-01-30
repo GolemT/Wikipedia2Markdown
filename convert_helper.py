@@ -99,7 +99,11 @@ def convert_link():
                 label.pack()
                 print("Conversion failed. Check logs for errors.")
         except Exception as e:
+
             print(f"An error occurred: {e}")
+
+        del linkList[:]
+
     else:
         label.pack()
         print("No links provided")
