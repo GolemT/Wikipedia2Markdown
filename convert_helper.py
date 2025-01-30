@@ -34,17 +34,34 @@ def get_link():
     print(linkArray)
 
 def convert_link():
-    convert(linkArray)
-    del linkArray[:]
+    label.pack_forget()
+    if len(linkArray) > 0:
+        try:
+            convert(linkArray)
+        except Exception as e:
+            print(f"An error occurred: {e}")
+        finally:
+            del linkArray[:]
+            print("List cleared")
+    else:
+        label.pack()
+        print("No links provided")
 
 #UI Elements
 link = customtkinter.CTkEntry(app, placeholder_text="Insert a Wikipedia Link here", width=200, height=40)
-link.pack(padx=30, pady=30)
+
 
 button = customtkinter.CTkButton(app, text="Add Link to List", command=get_link)
-button.pack(padx=10)
+
 button2 = customtkinter.CTkButton(app, text="Convert", command=convert_link)
-button2.pack(padx=10)
+
+label = customtkinter.CTkLabel(app, text="No links provided", fg_color="transparent", text_color = "red")
+
+#Layout
+link.pack(padx=30, pady=30)
+button.pack()
+button2.pack(pady=5)
+
 
 
 app.mainloop()
