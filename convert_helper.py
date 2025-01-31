@@ -16,20 +16,28 @@ convert_script_path = os.path.abspath("./script/convert_main.py")
 linkList = []
 html_frames = []
 
+def get_link():
+    text_link = link.get()
+    linkList.append(text_link)
+    print(linkList)
+    link.delete(0, customtkinter.END)
+
 def convert(linklist):
     for element in linklist:
         try:
-            result = subprocess.run(
+            subprocess.run(
                 ["python", convert_script_path, "-u", element],
                 capture_output=True,
                 text=True,
                 check=True
             )
         except subprocess.CalledProcessError as e:
-            print(f"Error converting {element}: {e}")
+            label.configure(text=f"{e}")
+            label.pack()
             return False
         except FileNotFoundError:
-            print(f"convert_main.py not found at {convert_script_path}")
+            label.configure(text=f"convert_main.py not found at {convert_script_path}")
+            label.pack()
             return False
     return True
 
@@ -51,61 +59,64 @@ def display_markdown(filepath, tab_name):
         text_widget.config(state=customtkinter.DISABLED)  # Make it read-only
 
     except FileNotFoundError:
-        print(f"Markdown file not found: {filepath}")
+        label.configure(text=f"Markdown file not found: {filepath}")
+        label.pack()
     except Exception as e:
-        print(f"An error occurred: {e}")
+        label.configure(text=f"An error occurred: {e}")
+        label.pack()
 
-def get_link():
-    text_link = link.get()
-    linkList.append(text_link)
-    print(linkList)
-    link.delete(0, customtkinter.END)
+
+def find_markdown_files(root_dir):
+    markdown_files = []
+    for directory, directoryname, filenames in os.walk(root_dir):
+        for filename in filenames:
+            if filename.endswith(".md"):
+                filepath = os.path.join(directory, filename)
+                markdown_files.append(filepath)
+    return markdown_files
 
 def convert_link():
     label.pack_forget()
-    if linkList:
-        try:
-            if convert(linkList):
-                if hasattr(app, "tabview"):
-                    app.tabview.destroy()
-                    html_frames.clear() # Clear the stored frames as well
-                app.tabview = customtkinter.CTkTabview(app)
-                app.tabview.pack(fill="both", expand=True)
 
-                def find_markdown_files(root_dir):
-                    markdown_files = []
-                    for dirpath, dirnames, filenames in os.walk(root_dir):
-                        for filename in filenames:
-                            if filename.endswith(".md"):
-                                filepath = os.path.join(dirpath, filename)
-                                markdown_files.append(filepath)
-                    return markdown_files
-
-                markdown_files = find_markdown_files(folder_path)
-
-                if markdown_files:
-                    for filepath in markdown_files:
-                        tab_name = os.path.basename(filepath)[:-3]
-                        display_markdown(filepath, tab_name)
-                else:
-                    print(f"No markdown files found in '{folder_path}' or its subdirectories.")
-
-                linkList.clear()
-            else:
-                label.pack()
-                print("Conversion failed. Check logs for errors.")
-        except Exception as e:
-            print(f"An error occurred: {e}")
-
-        del linkList[:]
-
-    else:
+    if not linkList:
+        label.configure(text="No links found.")
         label.pack()
+        return
+
+    try:
+        if not convert(linkList):
+            label.configure(text="Conversion failed. Check logs for errors.")
+            label.pack()
+            return
+
+        if hasattr(app, "tabview"):
+            app.tabview.destroy()
+            html_frames.clear()
+
+        app.tabview = customtkinter.CTkTabview(app)
+        app.tabview.pack(fill="both", expand=True)
+
+        markdown_files = find_markdown_files(folder_path)
+
+        if markdown_files:
+            for filepath in markdown_files:
+                tab_name = os.path.basename(filepath)[:-3]
+                display_markdown(filepath, tab_name)
+        else:
+            label.configure(text=f"No markdown files found in '{folder_path}' or its subdirectories.")
+            label.pack()
+
+    except Exception as e:
+        label.configure(text=f"An error occurred: {e}")
+        label.pack()
+
+    linkList.clear()
+
 
 link = customtkinter.CTkEntry(app, placeholder_text="Insert a Wikipedia Link here", width=200, height=40)
 button = customtkinter.CTkButton(app, text="Add Link to List", command=get_link, fg_color="#623CEA")
 button2 = customtkinter.CTkButton(app, text="Convert", command=convert_link, fg_color="#623CEA")
-label = customtkinter.CTkLabel(app, text="No links provided", fg_color="transparent", text_color="red")
+label = customtkinter.CTkLabel(app, fg_color="transparent", text_color="red")
 
 link.pack(padx=30, pady=30)
 button.pack()
