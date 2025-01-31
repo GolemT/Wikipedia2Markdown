@@ -62,7 +62,7 @@ def convert_to_md(element, target_url):
                         markdown += convert_to_md(child, target_url)
 
         elif (
-            not element.children
+                not element.children
         ):  # If there are no other Tag Children simply get the text from the element
             text = element.get_text(strip=True)
             if text:
@@ -72,22 +72,22 @@ def convert_to_md(element, target_url):
 
         # If no Converter function is available, handle specific cases and search the children
         elif (
-            not converter and element.children
+                not converter and element.children
         ):  # Wenn Kinder existieren, die Tags sind
             if "class" in element.attrs and "gliffy-container" in " ".join(
-                element["class"]
+                    element["class"]
             ):
                 markdown += gliffy_warning(target_url)
             elif "class" in element.attrs and "code" in " ".join(element["class"]):
                 markdown += code_to_md(element)
             elif (
-                "class" in element.attrs
-                and "macro" in " ".join(element["class"])
-                and not "table" in " ".join(element["class"])
+                    "class" in element.attrs
+                    and "macro" in " ".join(element["class"])
+                    and "table" not in " ".join(element["class"])
             ):
                 markdown += "\n" + macro_to_md(element, target_url)
             elif "class" in element.attrs and "jira-issue" in " ".join(
-                element["class"]
+                    element["class"]
             ):
                 markdown += jira_to_md(element)
             else:
