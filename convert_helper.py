@@ -11,7 +11,7 @@ def set_log_level(level):
     logger.set_level(level)
 
 app = customtkinter.CTk()
-app.geometry("720x480")
+app.geometry("1280x720")
 app.title("Wikipedia2Markdown")
 
 log_levels = ["DEBUG", "INFO", "WARNING", "ERROR"]
@@ -26,8 +26,15 @@ html_frames = {}
 
 def get_link():
     text_link = link.get()
-    linkList.append(text_link)
-    print(linkList)
+    if text_link:
+        linkList.append(text_link)
+        textbox.configure(state="normal")
+        textbox.insert("end",text_link + "\n")
+        textbox.configure(state="disabled")
+        print(linkList)
+    else:
+        label.configure(text=f"Please enter a valid link.")
+        label.pack()
     link.delete(0, customtkinter.END)
 
 def convert(linklist):
@@ -91,44 +98,53 @@ def convert_link():
         label.pack()
         return
 
-    try:
-        if not convert(linkList):
-            label.configure(text="Conversion failed. Check logs for errors.")
+    else:
+        try:
+            if not convert(linkList):
+                label.configure(text="Conversion failed. Check logs for errors.")
+                label.pack()
+                return
+
+            if hasattr(app, "tabview"):
+                app.tabview.destroy()
+                html_frames.clear()
+
+            app.tabview = customtkinter.CTkTabview(app)
+            app.tabview.pack(fill="both", expand=True)
+
+            markdown_files = find_markdown_files(folder_path)
+
+            if markdown_files:
+                for filepath in markdown_files:
+                    tab_name = os.path.basename(filepath)[:-3]
+                    display_markdown(filepath, tab_name)
+            else:
+                label.configure(text=f"No markdown files found in '{folder_path}' or its subdirectories.")
+                label.pack()
+
+        except Exception as e:
+            label.configure(text=f"An error occurred: {e}")
             label.pack()
-            return
-
-        if hasattr(app, "tabview"):
-            app.tabview.destroy()
-            html_frames.clear()
-
-        app.tabview = customtkinter.CTkTabview(app)
-        app.tabview.pack(fill="both", expand=True)
-
-        markdown_files = find_markdown_files(folder_path)
-
-        if markdown_files:
-            for filepath in markdown_files:
-                tab_name = os.path.basename(filepath)[:-3]
-                display_markdown(filepath, tab_name)
-        else:
-            label.configure(text=f"No markdown files found in '{folder_path}' or its subdirectories.")
-            label.pack()
-
-    except Exception as e:
-        label.configure(text=f"An error occurred: {e}")
-        label.pack()
 
     linkList.clear()
+    textbox.configure(state="normal")
+    textbox.delete(0.0, "end")
+    textbox.configure(state="disabled")
 
 
 link = customtkinter.CTkEntry(app, placeholder_text="Insert a Wikipedia Link here", width=200, height=40)
 button = customtkinter.CTkButton(app, text="Add Link to List", command=get_link, fg_color="#623CEA")
 button2 = customtkinter.CTkButton(app, text="Convert", command=convert_link, fg_color="#623CEA")
 label = customtkinter.CTkLabel(app, fg_color="transparent", text_color="red")
+listLabel = customtkinter.CTkLabel(app, fg_color="transparent", text="List of all Links to Convert")
+textbox = customtkinter.CTkTextbox(app, width=400, height=200)
+textbox.configure(state="disabled")
 
 link.pack(padx=30, pady=30)
 button.pack()
 button2.pack(pady=5)
+listLabel.pack(pady=5)
+textbox.pack()
 
 def on_closing():
     logger.shutdown()  # <-- Logger beenden, bevor die GUI schließt
