@@ -31,6 +31,10 @@ def table_to_md(table, target_url):
     to_process = table.find_all(True)
 
     for element in to_process:
+
+        if element.parent == None:
+            continue
+
         if element.attrs:
             if element.has_attr("style"):
                 del element["style"]
