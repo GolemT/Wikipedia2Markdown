@@ -67,10 +67,12 @@ def url_to_html():
         ".", ""
     )  # Path should not contain special characters
     path = truncate_string(path)  # Truncate path
-
     try:
         os.makedirs(f"landing/{path}/assets")
-        return soup.find("div", id="mw-content-ltr mw-parser-output")
+        s = soup.find("div", class_= "mw-content-ltr mw-parser-output")
+        if s == None:
+            s = soup.find("div", id= "mw-content-ltr mw-parser-output")
+        return s
     except OSError as e:
         print("folder already exists")
         exit()
