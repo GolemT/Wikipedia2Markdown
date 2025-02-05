@@ -1,6 +1,6 @@
 """Link Handling"""
 
-from modules.logger import logger  # Logger importieren
+from modules.logger import global_logger as logger
 from modules.doc_handling import replace_doc
 from modules.img_handling import replace_images
 

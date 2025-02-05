@@ -2,7 +2,7 @@
 
 import re
 from bs4 import Tag
-from modules.logger import logger  # Logger importieren
+from modules.logger import global_logger as logger
 
 
 def headers_to_markdown(element):

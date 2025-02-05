@@ -2,13 +2,21 @@ import subprocess
 import customtkinter
 from tkinter import scrolledtext
 import os
+from script.modules.logger import global_logger as logger
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
 
+def set_log_level(level):
+    logger.set_level(level)
+
 app = customtkinter.CTk()
 app.geometry("720x480")
 app.title("Wikipedia2Markdown")
+
+log_levels = ["DEBUG", "INFO", "WARNING", "ERROR"]
+log_dropdown = customtkinter.CTkComboBox(app, values=log_levels, command=set_log_level)
+log_dropdown.pack()
 
 folder_path = os.path.abspath("./landing")
 convert_script_path = os.path.abspath("./script/convert_main.py")
@@ -111,4 +119,9 @@ link.pack(padx=30, pady=30)
 button.pack()
 button2.pack(pady=5)
 
+def on_closing():
+    logger.shutdown()  # <-- Logger beenden, bevor die GUI schließt
+    app.quit()
+
+app.protocol("WM_DELETE_WINDOW", on_closing)
 app.mainloop()

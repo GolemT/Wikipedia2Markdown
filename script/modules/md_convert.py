@@ -11,7 +11,7 @@ from modules.code_handling import code_to_md
 from modules.gliffy_handling import gliffy_warning
 from modules.macro_handling import macro_to_md
 from modules.blockquote_handling import blockquote_to_md
-from modules.logger import logger  # Logger importieren
+from modules.logger import global_logger as logger
 
 element_to_markdown_converter = {
     "a": link_to_md,

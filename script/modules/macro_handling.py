@@ -1,7 +1,7 @@
 """Macro Handling"""
 
 from bs4 import Tag, NavigableString
-from modules.logger import logger  # Logger importieren
+from modules.logger import global_logger as logger
 
 
 def extract_text_recursively(element, target_url):

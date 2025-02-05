@@ -1,7 +1,7 @@
 """URL Handling"""
 
 import urllib.parse
-from modules.logger import logger  # Logger importieren
+from modules.logger import global_logger as logger
 
 
 def url_check(element):

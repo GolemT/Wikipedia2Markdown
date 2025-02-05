@@ -1,6 +1,6 @@
 """Blockquote Handling"""
 
-from modules.logger import logger  # Logger importieren
+from modules.logger import global_logger as logger
 
 
 def blockquote_to_md(element):

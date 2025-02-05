@@ -1,7 +1,7 @@
 """List Handling"""
 
 from bs4 import NavigableString, Tag
-from modules.logger import logger  # Logger importieren
+from modules.logger import global_logger as logger
 from modules.text_handling import (
     formatting_to_md,
     headers_to_markdown,

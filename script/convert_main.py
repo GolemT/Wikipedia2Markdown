@@ -14,16 +14,16 @@ from modules.md_convert import make_md
 from modules.url_handling import url_check
 from modules.text_handling import clean_str
 from modules.doc_handling import get_documents
-from modules.logger import logger
+from modules.logger import global_logger as logger
 
 parser = argparse.ArgumentParser()
-parser.add_argument(
-    "-u",
-    "--url",
-    required=True,
-    help="The Confluence url of the page that should be converted",
-)
+parser.add_argument("-u", "--url", required=True, help="The Confluence url of the page that should be converted")
+parser.add_argument("-l", "--log", required=False, help="Setzt das Log-Level (DEBUG, INFO, WARNING, ERROR)")
 arg = parser.parse_args()
+
+if arg.log:
+    logger.set_level(arg.log.upper())  # Ändert das Log-Level von der CLI aus
+
 target_url = url_check(str(arg.url))
 base_url = f"{urlparse(target_url).scheme}://{urlparse(target_url).netloc}"
 title = ""
@@ -81,16 +81,20 @@ def url_to_html():
         logger.error(f"Fehler beim Parsen der HTML-Seite: {str(e)}")
         return None
 
-
-# run conversion
-content = url_to_html()
-logger.info("Recieved HTML content")
-get_images(content, base_url, path)
-logger.info("Finished Downloading Images")
-get_documents(content, base_url, path)
-logger.info("Finished Downloading Documents")
-make_md(path, title, content, target_url)
-logger.info("Konvertierung erfolgreich abgeschlossen! 🚀")
-exit(0)
+try:
+    # run conversion
+    content = url_to_html()
+    logger.info("Recieved HTML content")
+    get_images(content, base_url, path)
+    logger.info("Finished Downloading Images")
+    get_documents(content, base_url, path)
+    logger.info("Finished Downloading Documents")
+    make_md(path, title, content, target_url)
+    logger.info("Konvertierung erfolgreich abgeschlossen! 🚀")
+    exit(0)
+except Exception as e:
+    logger.error(f"Fehler beim Konvertieren der Seite: {e}")
+finally:
+    logger.shutdown()
 
 

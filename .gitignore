@@ -466,4 +466,4 @@ src/landing
 .cache-loader
 
 /script/landing/**
-/script/.logs
+.logs

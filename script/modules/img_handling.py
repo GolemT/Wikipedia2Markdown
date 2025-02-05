@@ -2,7 +2,7 @@
 
 import os
 import requests
-from modules.logger import logger  # Logger importieren
+from modules.logger import global_logger as logger
 from modules.text_handling import clean_str, formatting_to_md
 
 classes = ["avatar", "gliffy", "emoticons", "userLogo "]
