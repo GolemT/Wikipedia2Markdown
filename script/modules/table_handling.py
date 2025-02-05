@@ -1,10 +1,9 @@
 """Table Handling"""
 
 from bs4 import BeautifulSoup, NavigableString
-from script.modules.img_handling import replace_images
-from script.modules.link_handling import link_to_md
-from script.modules.link_handling import jira_to_md
-from script.modules.gliffy_handling import gliffy_warning
+from modules.img_handling import replace_images
+from modules.link_handling import link_to_md
+from modules.gliffy_handling import gliffy_warning
 
 
 @staticmethod

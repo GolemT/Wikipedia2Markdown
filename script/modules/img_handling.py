@@ -2,7 +2,7 @@
 
 import os
 import requests
-from script.modules.text_handling import clean_str, formatting_to_md
+from modules.text_handling import clean_str, formatting_to_md
 
 classes = ["avatar", "gliffy", "emoticons", "userLogo "]
 

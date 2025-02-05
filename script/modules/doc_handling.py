@@ -3,7 +3,7 @@
 import os
 from urllib.parse import unquote
 import requests
-from script.modules.text_handling import clean_str
+from modules.text_handling import clean_str
 
 
 def clean_filename(filename):
