@@ -7,8 +7,10 @@ from script.modules.logger import global_logger as logger
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
 
+
 def set_log_level(level):
     logger.set_level(level)
+
 
 app = customtkinter.CTk()
 app.geometry("1280x720")
@@ -22,20 +24,23 @@ folder_path = os.path.abspath("./script/landing")
 convert_script_path = os.path.abspath("./script/convert_main.py")
 
 linkList = []
-html_frames = {} # used to display a preview of the markdown files
+html_frames = {}  # used to display a preview of the markdown files
+
 
 def get_link():
     text_link = link.get()
     if text_link:
         linkList.append(text_link)
         textbox.configure(state="normal")
-        textbox.insert("end",text_link + "\n")
+        textbox.insert("end", text_link + "\n")
         textbox.configure(state="disabled")
         print(linkList)
     else:
-        label.configure(text=f"Please enter a valid link.")
+        logger.error("No valid link entered")
+        label.configure(text="Please enter a valid link.")
         label.pack()
     link.delete(0, customtkinter.END)
+
 
 def convert(linklist):
     for element in linklist:
@@ -47,14 +52,17 @@ def convert(linklist):
                 check=True
             )
         except subprocess.CalledProcessError as e:
-            label.configure(text=f"{e}")
+            logger.error(e)
+            label.configure(text="Error while converting")
             label.pack()
             return False
         except FileNotFoundError:
-            label.configure(text=f"convert_main.py not found at {convert_script_path}")
+            logger.error(f"convert_main.py not found at {convert_script_path}")
+            label.configure(text="convert_main.py not found")
             label.pack()
             return False
     return True
+
 
 def display_markdown(filepath, tab_name):
     try:
@@ -74,10 +82,12 @@ def display_markdown(filepath, tab_name):
         text_widget.config(state=customtkinter.DISABLED)  # Make it read-only
 
     except FileNotFoundError:
-        label.configure(text=f"Markdown file not found: {filepath}")
+        logger.error(f"Markdown file not found: {filepath}")
+        label.configure(text="Markdown file not found")
         label.pack()
     except Exception as e:
-        label.configure(text=f"An error occurred: {e}")
+        logger.error(e)
+        label.configure(text="An error occurred while displaying the Markdown preview")
         label.pack()
 
 
@@ -90,10 +100,12 @@ def find_markdown_files(root_dir):
                 markdown_files.append(filepath)
     return markdown_files
 
+
 def convert_link():
     label.pack_forget()
 
     if not linkList:
+        logger.error("No valid links entered")
         label.configure(text="No links found.")
         label.pack()
         return
@@ -117,11 +129,13 @@ def convert_link():
                     tab_name = os.path.basename(filepath)[:-3]
                     display_markdown(filepath, tab_name)
             else:
-                label.configure(text=f"No markdown files found in '{folder_path}' or its subdirectories.")
+                logger.error(f"No markdown files found in '{folder_path}' or its subdirectories.")
+                label.configure(text="No markdown files found")
                 label.pack()
 
         except Exception as e:
-            label.configure(text=f"An error occurred: {e}")
+            logger.error(e)
+            label.configure(text="An error occurred while converting")
             label.pack()
 
     linkList.clear()
@@ -144,9 +158,11 @@ button2.pack(pady=5)
 listLabel.pack(pady=5)
 textbox.pack()
 
+
 def on_closing():
     logger.shutdown()  # <-- Logger beenden, bevor die GUI schließt
     app.quit()
+
 
 app.protocol("WM_DELETE_WINDOW", on_closing)
 app.mainloop()
