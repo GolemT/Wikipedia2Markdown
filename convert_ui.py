@@ -101,8 +101,6 @@ def convert_link():
     else:
         try:
             if not convert(linkList):
-                label.configure(text="Conversion failed. Check logs for errors.")
-                label.pack()
                 return
 
             if hasattr(app, "tabview"):
