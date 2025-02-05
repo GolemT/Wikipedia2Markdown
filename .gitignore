@@ -465,3 +465,5 @@ src/landing
 # Generated files
 .cache-loader
 
+/script/landing/**
+/script/.logs

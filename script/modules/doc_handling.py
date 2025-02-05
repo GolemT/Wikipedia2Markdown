@@ -3,7 +3,8 @@
 import os
 from urllib.parse import unquote
 import requests
-from script.modules.text_handling import clean_str
+from modules.logger import logger  # Logger importieren
+from modules.text_handling import clean_str
 
 
 def clean_filename(filename):
@@ -12,20 +13,23 @@ def clean_filename(filename):
     and replacing invalid filesystem characters with underscores.
 
     Args:
-        filename (String): Filename containing special characters like $
+        filename (str): Filename containing special characters like $
 
     Returns:
-        String: cleaned Filename without special characters
+        str: Cleaned filename without special characters.
     """
-
-    filename = unquote(filename)
-    filename = filename.split("?")[0]
-    invalid_chars = '<>:"/\\|?*'
-    for char in invalid_chars:
-        filename = filename.replace(char, "_")
-    parts = filename.split(".")
-    parts[0:-1] = [".".join(parts[0:-1]).replace(".", "")]
-    return ".".join(parts)
+    try:
+        filename = unquote(filename).split("?")[0]
+        invalid_chars = '<>:"/\\|?*'
+        for char in invalid_chars:
+            filename = filename.replace(char, "_")
+        parts = filename.split(".")
+        parts[0:-1] = [".".join(parts[0:-1]).replace(".", "")]
+        logger.debug(f"Bereinigter Dateiname: {filename}")
+        return ".".join(parts)
+    except Exception as e:
+        logger.error(f"Fehler beim Bereinigen des Dateinamens: {str(e)}")
+        return "unknown_file"
 
 
 def get_documents(element, base_url, title):
@@ -35,31 +39,45 @@ def get_documents(element, base_url, title):
     streams the download to handle large files efficiently.
 
     Args:
-        element (HTML Element): Element of the embedded document
-        base_url (String): base url to download documents from confluence
-        title (String): title to save documents under correct path
+        element (Tag): Element of the embedded document.
+        base_url (str): Base URL to download documents from Confluence.
+        title (str): Title to save documents under correct path.
     """
+    try:
+        document_links = element.find_all("a", class_="confluence-embedded-file")
+        if not document_links:
+            logger.warning("Keine Dokumente zum Herunterladen gefunden.")
+            return
 
-    for doc in element.find_all("a", class_="confluence-embedded-file"):
-        href = doc.get("href")
-        if href:
-            # Ensure the URL is properly formed
-            doc_url = (base_url + href) if "://" not in href else href
+        os.makedirs(f"landing/{title}/assets/", exist_ok=True)
+        logger.info(f"Speicherort für Dokumente: landing/{title}/assets/")
 
+        for doc in document_links:
+            href = doc.get("href")
+            if not href:
+                logger.warning("Dokument enthält keine gültige URL, wird übersprungen.")
+                continue
+
+            doc_url = base_url + href if "://" not in href else href
             doc_name = clean_filename(href.split("/")[-1])
             doc_path = os.path.join(f"landing/{title}/assets", doc_name)
 
-            # Create directories if they don't exist
-            os.makedirs(os.path.dirname(doc_path), exist_ok=True)
+            try:
+                logger.debug(f"Lade Dokument herunter: {doc_url}")
+                response = requests.get(doc_url, timeout=6000, stream=True)
+                if response.status_code == 200:
+                    with open(doc_path, "wb") as f:
+                        for chunk in response.iter_content(chunk_size=8192):
+                            f.write(chunk)
+                    logger.info(f"Dokument erfolgreich gespeichert: {doc_path}")
+                else:
+                    logger.error(f"Fehler beim Abrufen von {doc_url}: HTTP {response.status_code}")
 
-            # Stream the download to handle large files
-            response = requests.get(doc_url, headers=header, timeout=6000, stream=True)
-            if response.status_code == 200:
-                with open(doc_path, "wb") as f:
-                    for chunk in response.iter_content(chunk_size=8192):
-                        f.write(chunk)
-            else:
-                print("fail to get doc")
+            except requests.RequestException as e:
+                logger.error(f"Fehler beim Herunterladen von {doc_url}: {str(e)}")
+
+    except Exception as e:
+        logger.error(f"Fehler beim Verarbeiten von Dokumenten: {str(e)}")
 
 
 def replace_doc(element):
@@ -69,17 +87,27 @@ def replace_doc(element):
     into a Markdown link pointing to a local directory.
 
     Args:
-        element (HTML Element): The element in the page that needs to be replaced
+        element (Tag): The element in the page that needs to be replaced.
 
     Returns:
-        String: Link syntax to download the document
+        str: Markdown link to the document.
     """
-    url = element.attrs.get("href")
-    if "?" in url:
-        index = url.find("?")
-        url = url[:index]
-    doc_name = clean_str(url.split("/")[-1])  # Get the last bit of the URL as name
-    directory = f"./assets/{doc_name}"
-    md_doc = f" [{doc_name}]({directory})"
+    try:
+        url = element.attrs.get("href", "")
+        if not url:
+            logger.warning("Kein gültiger URL-Link für das Dokument gefunden.")
+            return ""
 
-    return md_doc
+        if "?" in url:
+            url = url.split("?")[0]
+
+        doc_name = clean_str(url.split("/")[-1])
+        directory = f"./assets/{doc_name}"
+        md_doc = f"[{doc_name}]({directory})"
+
+        logger.info(f"Markdown-Link für Dokument erstellt: {md_doc}")
+        return md_doc
+
+    except Exception as e:
+        logger.error(f"Fehler bei der Umwandlung eines Dokuments in Markdown: {str(e)}")
+        return ""
