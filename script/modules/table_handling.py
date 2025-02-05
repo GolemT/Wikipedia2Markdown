@@ -2,11 +2,11 @@
 
 from bs4 import BeautifulSoup, NavigableString
 from modules.img_handling import replace_images
-from modules.link_handling import link_to_md, jira_to_md
+from modules.link_handling import link_to_md
 from modules.gliffy_handling import gliffy_warning
-from modules.logger import global_logger as logger
 
 
+@staticmethod
 def table_to_md(table, target_url):
     """
     Converts a BeautifulSoup table element to a Markdown-compatible format.

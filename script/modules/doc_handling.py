@@ -3,7 +3,6 @@
 import os
 from urllib.parse import unquote
 import requests
-from modules.logger import global_logger as logger
 from modules.text_handling import clean_str
 
 

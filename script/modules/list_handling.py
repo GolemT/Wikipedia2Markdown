@@ -1,14 +1,13 @@
 """List Handling"""
 
 from bs4 import NavigableString, Tag
-from modules.logger import global_logger as logger
 from modules.text_handling import (
     formatting_to_md,
     headers_to_markdown,
     escape_html_tags,
 )
 from modules.img_handling import replace_images
-from modules.link_handling import link_to_md, jira_to_md
+from modules.link_handling import link_to_md
 from modules.code_handling import code_to_md
 from modules.macro_handling import macro_to_md
 from modules.blockquote_handling import blockquote_to_md
