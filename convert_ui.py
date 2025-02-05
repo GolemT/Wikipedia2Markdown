@@ -22,7 +22,7 @@ folder_path = os.path.abspath("./landing")
 convert_script_path = os.path.abspath("./script/convert_main.py")
 
 linkList = []
-html_frames = {}
+html_frames = {} # used to display a preview of the markdown files
 
 def get_link():
     text_link = link.get()
