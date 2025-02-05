@@ -2,16 +2,16 @@
 
 import os
 from bs4 import NavigableString, Tag
-from script.modules.img_handling import replace_images
-from script.modules.text_handling import formatting_to_md, headers_to_markdown, escape_html_tags
-from script.modules.table_handling import table_to_md
-from script.modules.link_handling import link_to_md
-from script.modules.link_handling import jira_to_md
-from script.modules.list_handling import list_to_md
-from script.modules.code_handling import code_to_md
-from script.modules.gliffy_handling import gliffy_warning
-from script.modules.macro_handling import macro_to_md
-from script.modules.blockquote_handling import blockquote_to_md
+from modules.img_handling import replace_images
+from modules.text_handling import formatting_to_md, headers_to_markdown, escape_html_tags
+from modules.table_handling import table_to_md
+from modules.link_handling import link_to_md, jira_to_md
+from modules.list_handling import list_to_md
+from modules.code_handling import code_to_md
+from modules.gliffy_handling import gliffy_warning
+from modules.macro_handling import macro_to_md
+from modules.blockquote_handling import blockquote_to_md
+from modules.logger import global_logger as logger
 
 element_to_markdown_converter = {
     "a": link_to_md,
@@ -35,85 +35,93 @@ element_to_markdown_converter = {
 
 def convert_to_md(element, target_url):
     """
-    Take a Confluence Page parsed with bs4 and convert each element into Markdown
+    Convert a Confluence page parsed with BeautifulSoup into Markdown.
 
     Args:
-        element (div element): Main Content of the Confluence page from which every element is read
-        target_url (String): URL to be converted for gliffy warnings
+        element (Tag or NavigableString): HTML content from Confluence.
+        target_url (str): URL of the Confluence page.
 
     Returns:
-        String: A complete String with every element of the confluence page
+        str: Converted Markdown content.
     """
     markdown = ""
 
-    if isinstance(element, Tag):
-        converter = element_to_markdown_converter.get(element.name)
-        if converter:
-            # The list function needs 2 Arguments instead of 1
-            if converter == list_to_md:
-                conversion_result = converter(element, target_url)
-            else:
-                conversion_result = converter(element)
-            if conversion_result is not None:
-                markdown += conversion_result
-            else:
-                if element.find(True):  # If there are other HTML children
+    try:
+        if isinstance(element, Tag):
+            converter = element_to_markdown_converter.get(element.name)
+
+            if converter:
+                logger.debug(f"Konvertiere Element: <{element.name}> mit {converter.__name__}")
+
+                if converter == list_to_md:
+                    conversion_result = converter(element, target_url)
+                else:
+                    conversion_result = converter(element)
+
+                if conversion_result is not None:
+                    markdown += conversion_result
+                else:
+                    logger.warning(f"Keine Konvertierung für Element: <{element.name}>. Fallback zu Kindern.")
                     for child in element.children:
                         markdown += convert_to_md(child, target_url)
 
-        elif (
-                not element.children
-        ):  # If there are no other Tag Children simply get the text from the element
-            text = element.get_text(strip=True)
+            elif not element.children:
+                text = element.get_text(strip=True)
+                if text:
+                    markdown += text
+            elif element.name == "table":
+                logger.debug(f"Tabelle erkannt: <{element.name}>")
+                markdown += table_to_md(element, target_url)
+
+            elif "class" in element.attrs:
+                class_list = " ".join(element["class"])
+                logger.debug(f"Unbekanntes HTML-Element mit Klassen: {class_list}")
+
+                if "gliffy-container" in class_list:
+                    markdown += gliffy_warning(target_url)
+                elif "code" in class_list:
+                    markdown += code_to_md(element)
+                elif "macro" in class_list and "table" not in class_list:
+                    markdown += "\n" + macro_to_md(element, target_url)
+                elif "jira-issue" in class_list:
+                    markdown += jira_to_md(element)
+                else:
+                    for child in element.children:
+                        markdown += convert_to_md(child, target_url)
+
+        elif isinstance(element, NavigableString):
+            text = escape_html_tags(element.strip())
             if text:
                 markdown += text
-        elif element.name == "table":
-            markdown += table_to_md(element, target_url)
 
-        # If no Converter function is available, handle specific cases and search the children
-        elif (
-                not converter and element.children
-        ):  # Wenn Kinder existieren, die Tags sind
-            if "class" in element.attrs and "gliffy-container" in " ".join(
-                    element["class"]
-            ):
-                markdown += gliffy_warning(target_url)
-            elif "class" in element.attrs and "code" in " ".join(element["class"]):
-                markdown += code_to_md(element)
-            elif (
-                    "class" in element.attrs
-                    and "macro" in " ".join(element["class"])
-                    and "table" not in " ".join(element["class"])
-            ):
-                markdown += "\n" + macro_to_md(element, target_url)
-            elif "class" in element.attrs and "jira-issue" in " ".join(
-                    element["class"]
-            ):
-                markdown += jira_to_md(element)
-            else:
-                for child in element.children:
-                    markdown += convert_to_md(child, target_url)
-    elif isinstance(element, NavigableString):
-        text = element.strip()
-        text = escape_html_tags(text)
-        if text:
-            # Add the text of the NavigableString
-            markdown += text
+        return markdown + "\n"
 
-    return markdown + "\n"
+    except Exception as e:
+        logger.error(f"Fehler bei der Konvertierung eines Elements: {str(e)}")
+        return ""
 
 
 def make_md(path, title, content, target_url):
     """
-    Function to create a .md file and populate it with the content of the given confluence page
+    Create a .md file and populate it with the converted content from a Confluence page.
 
     Args:
-        path (String): filepath showing where to save the converted .md file
-        title (String): title of the confluence page to name the .md file
-        content (String): div that hold every element that needs to be converted
-        target_url (String): URL to be converted for gliffy warnings
+        path (str): Filepath for saving the Markdown file.
+        title (str): Title of the Confluence page.
+        content (str): Parsed HTML content to convert.
+        target_url (str): URL for Gliffy warnings.
     """
-    md = f"# {title}" + "\n\n" + convert_to_md(content, target_url)
-    md_path = os.path.join(f"landing/{path}/", f"{path}.md")
-    with open(md_path, "w", encoding="utf-8") as f:
-        f.write(md)
+    try:
+        logger.info(f"Starte Konvertierung von '{title}' nach Markdown...")
+
+        md = f"# {title}" + "\n\n" + convert_to_md(content, target_url)
+        md_path = os.path.join(f"landing/{path}/", f"{path}.md")
+
+        os.makedirs(os.path.dirname(md_path), exist_ok=True)
+        with open(md_path, "w", encoding="utf-8") as f:
+            f.write(md)
+
+        logger.info(f"Markdown-Datei erfolgreich gespeichert: {md_path}")
+
+    except Exception as e:
+        logger.error(f"Fehler beim Erstellen der Markdown-Datei: {str(e)}")
