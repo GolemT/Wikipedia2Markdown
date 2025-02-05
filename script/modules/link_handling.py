@@ -1,7 +1,8 @@
 """Link Handling"""
 
-from script.modules.doc_handling import replace_doc
-from script.modules.img_handling import replace_images
+from modules.logger import global_logger as logger
+from modules.doc_handling import replace_doc
+from modules.img_handling import replace_images
 
 
 def link_to_md(element):
@@ -12,45 +13,74 @@ def link_to_md(element):
     link if the content contains an email address or a standard link otherwise.
 
     Args:
-        element (a element): A Link on the confluence page
+        element (Tag): A link element from the Confluence page.
 
     Returns:
-        String: Markdown Syntax for Links
+        str: Markdown-formatted link.
     """
+    try:
+        if element is None:
+            logger.warning("Link-Element ist None, wird ignoriert.")
+            return ""
 
-    md_link = ""
+        logger.debug(f"Verarbeite Link: {element.get_text(strip=True)}")
 
-    if "confluence-embedded-file" in element.get("class", []):
-        md_link = replace_doc(element)
-    else:
-        text = element.get_text(strip=True)
-        if element.get("href", ""):
-            if "Datei:" in element.get("href", ""): # Images are also made into Links
+        if "confluence-embedded-file" in element.get("class", []):
+            logger.info("Eingebettete Datei erkannt, wird verarbeitet...")
+            md_link = replace_doc(element)
+        else:
+            text = element.get_text(strip=True)
+            href = element.get("href", "")
+
+            if not href:
+                logger.warning(f"Link ohne href-Attribut erkannt: {text}")
+                href = "nolink"
+
+            # Sonderfall: Wenn der Link eine Bilddatei enthält
+            if "Datei:" in href:
                 child = element.find("img")
                 md_link = replace_images(child)
-            url = element.get("href", "")
-        else:
-            url = "nolink"
+            elif "@" in text:
+                md_link = f" [{text}](mailto:{text})"
+            else:
+                md_link = f"[{text}]({href})"
 
-        if "@" in text:
-            md_link = f" [{text}](mailto:{text})"
-        else:
-            md_link = f"[{text}]({url})"
+        logger.info(f"Link erfolgreich konvertiert: {md_link}")
+        return md_link
 
-    return md_link
+    except Exception as e:
+        logger.error(f"Fehler bei der Link-Konvertierung: {str(e)}")
+        return ""
 
 
 def jira_to_md(element):
     """
-    Special handling for Jira Tickets
+    Converts a Confluence Jira issue link into Markdown.
 
     Args:
-        element (HTML element): A element with the link to a jira issue on the confluence page
+        element (Tag): The Jira issue link element.
 
     Returns:
-        String: Markdown Syntax for Links
+        str: Markdown-formatted Jira issue link.
     """
-    ticket = element.find("a")
-    ticket = link_to_md(ticket)
+    try:
+        if element is None:
+            logger.warning("Jira-Element ist None, wird ignoriert.")
+            return ""
 
-    return ticket
+        ticket = element.find("a")
+
+        if ticket is None:
+            logger.warning("Kein <a>-Tag innerhalb des Jira-Elements gefunden.")
+            return ""
+
+        logger.debug(f"Verarbeite Jira-Link: {ticket.get_text(strip=True)}")
+
+        jira_link = link_to_md(ticket)
+
+        logger.info(f"Jira-Link erfolgreich konvertiert: {jira_link}")
+        return jira_link
+
+    except Exception as e:
+        logger.error(f"Fehler bei der Jira-Link-Konvertierung: {str(e)}")
+        return ""
