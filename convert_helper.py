@@ -14,7 +14,7 @@ folder_path = os.path.abspath("./landing")
 convert_script_path = os.path.abspath("./script/convert_main.py")
 
 linkList = []
-html_frames = []
+html_frames = {}
 
 def convert(linklist):
     for element in linklist:
