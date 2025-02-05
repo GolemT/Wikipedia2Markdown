@@ -34,7 +34,6 @@ def get_link():
         textbox.configure(state="normal")
         textbox.insert("end", text_link + "\n")
         textbox.configure(state="disabled")
-        print(linkList)
     else:
         logger.error("No valid link entered")
         label.configure(text="Please enter a valid link.")
@@ -52,12 +51,12 @@ def convert(linklist):
                 check=True
             )
         except subprocess.CalledProcessError as e:
-            logger.error(e)
+            logger.error(f"An Error ocurred while converting: {e}")
             label.configure(text="Error while converting")
             label.pack()
             return False
-        except FileNotFoundError:
-            logger.error(f"convert_main.py not found at {convert_script_path}")
+        except FileNotFoundError as e:
+            logger.debug(f"FileNotFoundError: {e}")
             label.configure(text="convert_main.py not found")
             label.pack()
             return False
@@ -81,8 +80,9 @@ def display_markdown(filepath, tab_name):
         text_widget.insert(customtkinter.END, markdown_content)  # Insert raw Markdown
         text_widget.config(state=customtkinter.DISABLED)  # Make it read-only
 
-    except FileNotFoundError:
-        logger.error(f"Markdown file not found: {filepath}")
+
+    except FileNotFoundError as e:
+        logger.debug(f"FileNotFoundError: {e}")
         label.configure(text="Markdown file not found")
         label.pack()
     except Exception as e:
