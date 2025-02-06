@@ -1,5 +1,6 @@
 """Link Handling"""
 
+from modules.logger import global_logger as logger
 from modules.doc_handling import replace_doc
 from modules.img_handling import replace_images
 
@@ -12,8 +13,12 @@ def link_to_md(element):
         element (a element): A Link on the Wiki page
 
     Returns:
-        String: Markdown Syntax for Links
+        str: Markdown-formatted link.
     """
+    try:
+        if element is None:
+            logger.warning("Link-Element ist None, wird ignoriert.")
+            return ""
 
     md_link = ""
     

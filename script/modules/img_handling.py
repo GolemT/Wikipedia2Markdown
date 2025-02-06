@@ -2,6 +2,7 @@
 
 import os
 import requests
+from modules.logger import global_logger as logger
 from modules.text_handling import clean_str, formatting_to_md
 
 classes = ["avatar", "gliffy", "emoticons", "userLogo "]
@@ -13,18 +14,17 @@ def check_class(element):
     Returns True if a matching class is found, otherwise False.
 
     Args:
-        element (img element): img element to be checked
+        element (Tag): img element to be checked.
 
     Returns:
-        boolean: wether certain classes are within the element or not
+        bool: Whether certain classes are within the element or not.
     """
     if element.attrs.get("class"):
         for item in classes:
             if item in str(element.attrs.get("class")):
+                logger.debug(f"Bild ignoriert wegen Klasse: {item}")
                 return True
-
-    else:
-        return False
+    return False
 
 
 def get_images(element, base_url, title):
@@ -34,39 +34,47 @@ def get_images(element, base_url, title):
     filenames are sanitized and stripped of query parameters.
 
     Args:
-        element (img element): An img element found in the Confluence page
-        base_url (String): Url to download pictures form Confluence
-        title (String): Filename to save pictures to the correct folder
+        element (Tag): An img element found in the Confluence page.
+        base_url (str): URL to download pictures from Confluence.
+        title (str): Filename to save pictures to the correct folder.
     """
+    try:
+        image_tags = element.find_all("img")
+        if not image_tags:
+            logger.warning("Keine Bilder zum Herunterladen gefunden.")
+            return
 
-    for image in element.find_all("img"):
+        os.makedirs(f"landing/{title}/assets/", exist_ok=True)
+        logger.info(f"Speicherort für Bilder: landing/{title}/assets/")
 
-        if not check_class(image):
+        for image in image_tags:
+            if not check_class(image):
+                img_url = image.attrs.get("src", "")
 
-            if "://" not in str(image.attrs.get("src")):
-                img_url = "https:" + str(image.attrs.get("src"))
-            else:
-                img_url = str(image.attrs.get("src"))
+                if "://" not in img_url:
+                    img_url = "https:" + img_url
 
-            if "?" in img_url:
-                # print("fiuwar") # Found Image Url With Api Request:)
-                index = img_url.find("?")
-                img_url = img_url[:index]
+                if "?" in img_url:
+                    img_url = img_url.split("?")[0]  # Entferne Query-Parameter
 
-            img_data = requests.get(img_url, timeout=6000).content
-            img_name = clean_str(
-                img_url.split("/")[-1]
-            )  # Get the last bit of the URL as name
-            if len(img_name) > 15:
-                img_name = img_name[:15] + img_name[-4:]
-            img_path = os.path.join(f"landing/{title}/assets/", img_name)
+                try:
+                    logger.debug(f"Lade Bild herunter: {img_url}")
+                    img_data = requests.get(img_url, timeout=6000).content
+                    img_name = clean_str(img_url.split("/")[-1])  # Verwende letzten Teil der URL als Namen
+                    if len(img_name) > 15:
+                        img_name = img_name[:15] + img_name[-4:]  # Begrenze Länge des Namens
+                    img_path = os.path.join(f"landing/{title}/assets/", img_name)
 
-            print(img_url)
-            print(img_path)
-            print(img_name)
+                    with open(img_path, "wb") as f:
+                        f.write(img_data)
 
-            with open(img_path, "wb") as f:
-                f.write(img_data)
+                    logger.info(f"Bild gespeichert: {img_path}")
+
+                except requests.RequestException as e:
+                    logger.error(f"Fehler beim Herunterladen von {img_url}: {str(e)}")
+
+    except Exception as e:
+        logger.error(f"Fehler beim Verarbeiten von Bildern: {str(e)}")
 
 
 def replace_images(element):
@@ -76,28 +84,33 @@ def replace_images(element):
     captions or additional descriptions.
 
     Args:
-        element (img element): The image element that needs to be converted
+        element (Tag): The image element that needs to be converted.
 
     Returns:
-        String: Markdown Syntax of images
+        str: Markdown Syntax of images.
     """
-    url = element.attrs.get("src")
-    if "?" in url:
-        index = url.find("?")
-        url = url[:index]
-    img_name = clean_str(url.split("/")[-1])  # Get the last bit of the URL as name
-    directory = f"./assets/{img_name}"
-    md_img = f" ![{img_name}]({directory})"
+    try:
+        url = element.attrs.get("src", "")
+        if "?" in url:
+            url = url.split("?")[0]
 
-    # Some Image Elements have other HTML Elements as Children
-    text = ""
-    if element.children:
-        for child in element.children:
-            if child.name in ["strong", "em", "s", "u"]:
-                text += formatting_to_md(child)
-            else:
-                text += child.get_text()
+        img_name = clean_str(url.split("/")[-1])
+        directory = f"./assets/{img_name}"
+        md_img = f"![{img_name}]({directory})"
 
-    full_img = md_img + text
+        text = ""
+        if element.children:
+            for child in element.children:
+                if child.name in ["strong", "em", "s", "u"]:
+                    text += formatting_to_md(child)
+                else:
+                    text += child.get_text()
 
-    return full_img
+        full_img = md_img + text
+
+        logger.info(f"Markdown-Bild erfolgreich generiert: {full_img.strip()}")
+        return full_img
+
+    except Exception as e:
+        logger.error(f"Fehler bei der Bild-Konvertierung zu Markdown: {str(e)}")
+        return ""
