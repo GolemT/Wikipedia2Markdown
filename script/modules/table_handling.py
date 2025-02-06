@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup, NavigableString
 from modules.img_handling import replace_images
 from modules.link_handling import link_to_md
 from modules.gliffy_handling import gliffy_warning
+from modules.logger import global_logger as logger
 
 
 @staticmethod
@@ -55,11 +56,7 @@ def table_to_md(table, target_url):
             elif element.attrs:
                 class_list = " ".join(element.get("class", []))
 
-                if "jira-issue" in class_list:
-                    logger.info("JIRA-Issue in Tabelle gefunden, wird ersetzt...")
-                    element.replace_with(jira_to_md(element))
-
-                elif "gliffy-container" in class_list:
+                if "gliffy-container" in class_list:
                     logger.info("Gliffy-Container in Tabelle gefunden, wird ersetzt...")
                     element.replace_with(gliffy_warning(target_url))
 

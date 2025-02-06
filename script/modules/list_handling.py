@@ -1,6 +1,7 @@
 """List Handling"""
 
 from bs4 import NavigableString, Tag
+from modules.logger import global_logger as logger
 from modules.text_handling import (
     formatting_to_md,
     headers_to_markdown,
@@ -145,8 +146,6 @@ def search_child(element, target_url, depth=0):
                     markdown += code_to_md(element)
                 elif "class" in element.attrs and "macro" in " ".join(element["class"]):
                     markdown += "\n" + macro_to_md(element, target_url)
-                elif "class" in element.attrs and "jira-issue" in " ".join(element["class"]):
-                    markdown += jira_to_md(element)
                 else:
                     for child in element.children:
                         markdown += search_child(child, target_url, depth)

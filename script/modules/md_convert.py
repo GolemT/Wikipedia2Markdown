@@ -11,6 +11,7 @@ from modules.code_handling import code_to_md
 from modules.gliffy_handling import gliffy_warning
 from modules.macro_handling import macro_to_md
 from modules.blockquote_handling import blockquote_to_md
+from modules.logger import global_logger as logger
 
 element_to_markdown_converter = {
     "a": link_to_md,
@@ -82,8 +83,6 @@ def convert_to_md(element, target_url):
                     markdown += code_to_md(element)
                 elif "macro" in class_list and "table" not in class_list:
                     markdown += "\n" + macro_to_md(element, target_url)
-                elif "jira-issue" in class_list:
-                    markdown += jira_to_md(element)
                 else:
                     for child in element.children:
                         markdown += convert_to_md(child, target_url)
