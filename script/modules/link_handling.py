@@ -33,9 +33,9 @@ def link_to_md(element):
             logger.warning(f"Link ohne href-Attribut erkannt: {text}")
             href = "nolink"
         
-        if url.startswith("/wiki/"):
-            url = f"https://de.wikipedia.org{url}"
-            md_link = f"[{text}]({url})"
+        if href.startswith("/wiki/"):
+            href = f"https://de.wikipedia.org{href}"
+            md_link = f"[{text}]({href})"
 
         # Sonderfall: Wenn der Link eine Bilddatei enthält
         if "Datei:" in href:
