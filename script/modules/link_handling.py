@@ -10,7 +10,7 @@ def link_to_md(element):
     Converts an HTML anchor element into a Markdown link.
 
     Args:
-        element (a element): A Link on the Wiki page
+        element (Tag): A Link on the Wiki page
 
     Returns:
         str: Markdown-formatted link.
