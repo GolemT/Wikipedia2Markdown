@@ -10,7 +10,7 @@ Wikipedia2Markdown ist ein Python Script welches eine Wikipedia Seite scannt und
 
 #### Dependencies
 
-Um die benötigten python libraries zu installieren den folgenden Befehl in einen Terminal eingeben:
+Um die benötigten python libraries zu installieren, den folgenden Befehl in einen Terminal eingeben:
 
 ```Powershell
     pip install bs4 requests dotenv
@@ -103,7 +103,9 @@ Info Message
 3. Nummerierte Aufzählung
 
 ```python
-Code Block
+  // Code Block
+  main():
+    print("Hello, World")
 ```
 
 ```Code Snippet```
