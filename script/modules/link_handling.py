@@ -43,14 +43,6 @@ def link_to_md(element):
             md_link = f" [{text}](mailto:{text})"
         else:
             md_link = f"[{text}]({href})"
-        # Sonderfall: Wenn der Link eine Bilddatei enthält
-        if "Datei:" in href:
-            child = element.find("img")
-            md_link = replace_images(child)
-        elif "@" in text:
-            md_link = f" [{text}](mailto:{text})"
-        else:
-            md_link = f"[{text}]({href})"
 
         logger.info(f"Link erfolgreich konvertiert: {md_link}")
         return md_link
