@@ -5,10 +5,9 @@ from bs4 import NavigableString, Tag
 from modules.img_handling import replace_images
 from modules.text_handling import formatting_to_md, headers_to_markdown, escape_html_tags
 from modules.table_handling import table_to_md
-from modules.link_handling import link_to_md, jira_to_md
+from modules.link_handling import link_to_md
 from modules.list_handling import list_to_md
 from modules.code_handling import code_to_md
-from modules.gliffy_handling import gliffy_warning
 from modules.macro_handling import macro_to_md
 from modules.blockquote_handling import blockquote_to_md
 from modules.logger import global_logger as logger
@@ -35,11 +34,11 @@ element_to_markdown_converter = {
 
 def convert_to_md(element, target_url):
     """
-    Convert a Confluence page parsed with BeautifulSoup into Markdown.
+    Convert a Wikipedia page parsed with BeautifulSoup into Markdown.
 
     Args:
-        element (Tag or NavigableString): HTML content from Confluence.
-        target_url (str): URL of the Confluence page.
+        element (Tag or NavigableString): HTML content from Wikipedia.
+        target_url (str): URL of the Wikipedia page.
 
     Returns:
         str: Converted Markdown content.
@@ -77,14 +76,10 @@ def convert_to_md(element, target_url):
                 class_list = " ".join(element["class"])
                 logger.debug(f"Unbekanntes HTML-Element mit Klassen: {class_list}")
 
-                if "gliffy-container" in class_list:
-                    markdown += gliffy_warning(target_url)
-                elif "code" in class_list:
+                if "code" in class_list:
                     markdown += code_to_md(element)
                 elif "macro" in class_list and "table" not in class_list:
                     markdown += "\n" + macro_to_md(element, target_url)
-                elif "jira-issue" in class_list:
-                    markdown += jira_to_md(element)
                 else:
                     for child in element.children:
                         markdown += convert_to_md(child, target_url)
@@ -103,11 +98,11 @@ def convert_to_md(element, target_url):
 
 def make_md(path, title, content, target_url):
     """
-    Create a .md file and populate it with the converted content from a Confluence page.
+    Create a .md file and populate it with the converted content from a Wikipedia page.
 
     Args:
         path (str): Filepath for saving the Markdown file.
-        title (str): Title of the Confluence page.
+        title (str): Title of the Wikipedia page.
         content (str): Parsed HTML content to convert.
         target_url (str): URL for Gliffy warnings.
     """

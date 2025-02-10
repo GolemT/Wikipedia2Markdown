@@ -55,15 +55,14 @@ def extract_text_recursively(element, target_url):
         return ""
 
 
-def macro_to_md(element, target_url):
+def macro_to_md(element):
     """
-    Converts Confluence macro-styled elements to Markdown based on their class attributes.
+    Converts Wikipedia macro-styled elements to Markdown based on their class attributes.
     Handles specific macro types like warning, error, and info by prepending them with
     appropriate symbols and formatting the content with indentation.
 
     Args:
         element (HTML Element): A HTML element with the word "macro" in the class attribute
-        target_url (str): URL needed for Gliffy warnings
 
     Returns:
         str: Macro converted to Markdown Syntax
@@ -98,7 +97,7 @@ def macro_to_md(element, target_url):
         logger.info(f"Makro erkannt: {macro_type}, wird konvertiert...")
 
         md = f"\n{symbol}{macro_type}\n"
-        content = extract_text_recursively(element, target_url)
+        content = extract_text_recursively(element)
 
         if not content.strip():
             logger.warning(f"Makro '{macro_type}' enthält keinen Inhalt.")

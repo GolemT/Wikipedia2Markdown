@@ -5,7 +5,7 @@ import requests
 from modules.logger import global_logger as logger
 from modules.text_handling import clean_str, formatting_to_md
 
-classes = ["avatar", "gliffy", "emoticons", "userLogo "]
+classes = ["avatar", "emoticons"]
 
 
 def check_class(element):
@@ -27,15 +27,14 @@ def check_class(element):
     return False
 
 
-def get_images(element, base_url, title):
+def get_images(element, title):
     """
     Retrieves and downloads all images from a given HTML element, excluding those
     with specific classes. Images are saved to a designated assets directory, and
     filenames are sanitized and stripped of query parameters.
 
     Args:
-        element (Tag): An img element found in the Confluence page.
-        base_url (str): URL to download pictures from Confluence.
+        element (Tag): An img element found in the Wikipedia page.
         title (str): Filename to save pictures to the correct folder.
     """
     try:
