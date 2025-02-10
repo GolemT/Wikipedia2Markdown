@@ -8,7 +8,6 @@ from modules.table_handling import table_to_md
 from modules.link_handling import link_to_md
 from modules.list_handling import list_to_md
 from modules.code_handling import code_to_md
-from modules.macro_handling import macro_to_md
 from modules.blockquote_handling import blockquote_to_md
 from modules.logger import global_logger as logger
 
@@ -78,8 +77,6 @@ def convert_to_md(element, target_url):
 
                 if "code" in class_list:
                     markdown += code_to_md(element)
-                elif "macro" in class_list and "table" not in class_list:
-                    markdown += "\n" + macro_to_md(element, target_url)
                 else:
                     for child in element.children:
                         markdown += convert_to_md(child, target_url)
@@ -104,7 +101,6 @@ def make_md(path, title, content, target_url):
         path (str): Filepath for saving the Markdown file.
         title (str): Title of the Wikipedia page.
         content (str): Parsed HTML content to convert.
-        target_url (str): URL for Gliffy warnings.
     """
     try:
         logger.info(f"Starte Konvertierung von '{title}' nach Markdown...")

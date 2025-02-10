@@ -10,7 +10,6 @@ from modules.text_handling import (
 from modules.img_handling import replace_images
 from modules.link_handling import link_to_md
 from modules.code_handling import code_to_md
-from modules.macro_handling import macro_to_md
 from modules.blockquote_handling import blockquote_to_md
 from modules.table_handling import table_to_md
 
@@ -141,8 +140,6 @@ def search_child(element, target_url, depth=0):
             elif not converter and element.children:
                 if "class" in element.attrs and "code" in " ".join(element["class"]):
                     markdown += code_to_md(element)
-                elif "class" in element.attrs and "macro" in " ".join(element["class"]):
-                    markdown += "\n" + macro_to_md(element, target_url)
                 else:
                     for child in element.children:
                         markdown += search_child(child, target_url, depth)
