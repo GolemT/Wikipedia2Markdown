@@ -1,16 +1,18 @@
 """Link Handling"""
 
 from modules.logger import global_logger as logger
-from modules.doc_handling import replace_doc
 from modules.img_handling import replace_images
 
 
 def link_to_md(element):
     """
-    Converts an HTML anchor element into a Markdown link.
+    Converts an HTML anchor element into a Markdown link. If the element has a
+    class 'Wikipedia-embedded-file', it uses a document handler to replace the
+    document reference. Otherwise, it creates a Markdown link either as a MailTo
+    link if the content contains an email address or a standard link otherwise.
 
     Args:
-        element (Tag): A Link on the Wiki page
+        element (Tag): A link element from the Wikipedia page.
 
     Returns:
         str: Markdown-formatted link.
@@ -22,12 +24,8 @@ def link_to_md(element):
 
         logger.debug(f"Verarbeite Link: {element.get_text(strip=True)}")
 
-        if "confluence-embedded-file" in element.get("class", []):
-            logger.info("Eingebettete Datei erkannt, wird verarbeitet...")
-            md_link = replace_doc(element)
-        else:
-            text = element.get_text(strip=True)
-            href = element.get("href", "")
+        text = element.get_text(strip=True)
+        href = element.get("href", "")
 
         if not href:
             logger.warning(f"Link ohne href-Attribut erkannt: {text}")
@@ -37,6 +35,14 @@ def link_to_md(element):
             href = f"https://de.wikipedia.org{href}"
             md_link = f"[{text}]({href})"
 
+        # Sonderfall: Wenn der Link eine Bilddatei enthält
+        if "Datei:" in href:
+            child = element.find("img")
+            md_link = replace_images(child)
+        elif "@" in text:
+            md_link = f" [{text}](mailto:{text})"
+        else:
+            md_link = f"[{text}]({href})"
         # Sonderfall: Wenn der Link eine Bilddatei enthält
         if "Datei:" in href:
             child = element.find("img")

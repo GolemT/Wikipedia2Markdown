@@ -18,7 +18,7 @@ const config: Config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'GolemT', // Usually your GitHub org/user name.
-  projectName: 'Confluence2Markdown', // Usually your repo name.
+  projectName: 'Wikipedia2Markdown', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',

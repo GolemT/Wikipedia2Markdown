@@ -10,15 +10,13 @@ from modules.text_handling import (
 from modules.img_handling import replace_images
 from modules.link_handling import link_to_md
 from modules.code_handling import code_to_md
-from modules.macro_handling import macro_to_md
 from modules.blockquote_handling import blockquote_to_md
-from modules.gliffy_handling import gliffy_warning
 from modules.table_handling import table_to_md
 
 
 def list_to_md(input, target_url, ebene=0):
     """
-    Converts an unordered list element on the Confluence Page to Markdown.
+    Converts an unordered list element on the Wikipedia Page to Markdown.
 
     Args:
         input (Tag): The list element that needs to be converted.
@@ -54,7 +52,7 @@ def list_to_md(input, target_url, ebene=0):
 
 def ordered_list_to_md(input, target_url, depth):
     """
-    Converts an ordered list element on the Confluence Page to Markdown.
+    Converts an ordered list element on the Wikipedia Page to Markdown.
 
     Args:
         input (Tag): The ordered list element.
@@ -140,12 +138,8 @@ def search_child(element, target_url, depth=0):
                 logger.debug("Geordnete Liste in einer Liste erkannt, wird rekursiv konvertiert...")
                 markdown += "\n" + ordered_list_to_md(element, target_url, depth + 1)
             elif not converter and element.children:
-                if "class" in element.attrs and "gliffy-container" in " ".join(element["class"]):
-                    markdown += gliffy_warning(target_url)
-                elif "class" in element.attrs and "code" in " ".join(element["class"]):
+                if "class" in element.attrs and "code" in " ".join(element["class"]):
                     markdown += code_to_md(element)
-                elif "class" in element.attrs and "macro" in " ".join(element["class"]):
-                    markdown += "\n" + macro_to_md(element, target_url)
                 else:
                     for child in element.children:
                         markdown += search_child(child, target_url, depth)

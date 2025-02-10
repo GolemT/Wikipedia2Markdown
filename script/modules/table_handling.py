@@ -3,18 +3,15 @@
 from bs4 import BeautifulSoup, NavigableString
 from modules.img_handling import replace_images
 from modules.link_handling import link_to_md
-from modules.gliffy_handling import gliffy_warning
 from modules.logger import global_logger as logger
 
 
-@staticmethod
-def table_to_md(table, target_url):
+def table_to_md(table):
     """
     Converts a BeautifulSoup table element to a Markdown-compatible format.
 
     Args:
         table (Tag): BeautifulSoup table element.
-        target_url (str): URL needed for Gliffy warnings.
 
     Returns:
         str: String representation of the modified table.
@@ -45,20 +42,13 @@ def table_to_md(table, target_url):
 
             elif element.name == "table":
                 logger.debug("Verschachtelte Tabelle erkannt, wird konvertiert...")
-                table_text = table_to_md(element, target_url)
+                table_text = table_to_md(element)
                 inner_table = BeautifulSoup(table_text, "html.parser")
                 element.replace_with(inner_table)
 
             elif element.name == "a":
                 logger.info("Link in Tabelle gefunden, wird konvertiert...")
                 element.replace_with(link_to_md(element))
-
-            elif element.attrs:
-                class_list = " ".join(element.get("class", []))
-
-                if "gliffy-container" in class_list:
-                    logger.info("Gliffy-Container in Tabelle gefunden, wird ersetzt...")
-                    element.replace_with(gliffy_warning(target_url))
 
             elif isinstance(element, NavigableString):
                 cleaned_text = " ".join(element.string.split())
