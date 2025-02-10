@@ -69,7 +69,7 @@ def convert_to_md(element, target_url):
                     markdown += text
             elif element.name == "table":
                 logger.debug(f"Tabelle erkannt: <{element.name}>")
-                markdown += table_to_md(element, target_url)
+                markdown += table_to_md(element)
 
             elif "class" in element.attrs:
                 class_list = " ".join(element["class"])
@@ -77,6 +77,8 @@ def convert_to_md(element, target_url):
 
                 if "code" in class_list:
                     markdown += code_to_md(element)
+                elif "mw-editsection" in class_list:
+                    markdown += ""
                 else:
                     for child in element.children:
                         markdown += convert_to_md(child, target_url)

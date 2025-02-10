@@ -84,7 +84,7 @@ try:
     # run conversion
     content = url_to_html()
     logger.info("Recieved HTML content")
-    get_images(content, base_url, path)
+    get_images(content, path)
     logger.info("Finished Downloading Images")
     make_md(path, title, content, target_url)
     logger.info("Konvertierung erfolgreich abgeschlossen! 🚀")
