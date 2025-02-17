@@ -130,7 +130,7 @@ def search_child(element, target_url, depth=0):
                     markdown += text
             elif element.name == "table":
                 logger.info("Tabelle in einer Liste gefunden, wird konvertiert...")
-                markdown += table_to_md(element, target_url)
+                markdown += table_to_md(element)
             elif element.name == "ul":
                 logger.debug("Ungeordnete Liste in einer Liste erkannt, wird rekursiv konvertiert...")
                 markdown += "\n" + list_to_md(element, target_url, depth + 1)
