@@ -12,6 +12,8 @@ from modules.blockquote_handling import blockquote_to_md
 from modules.logger import global_logger as logger
 
 element_to_markdown_converter = {
+    "noscript": { logger.info("Skipped noscript Tag")},
+    "style": { logger.info("Skipped style Tag")},
     "a": link_to_md,
     "code": code_to_md,
     "ul": list_to_md,
@@ -28,6 +30,7 @@ element_to_markdown_converter = {
     "h4": headers_to_markdown,
     "h5": headers_to_markdown,
     "h6": headers_to_markdown,
+    "table": table_to_md,
 }
 
 
@@ -45,9 +48,9 @@ def convert_to_md(element, target_url):
     markdown = ""
 
     try:
+        logger.debug(element)
         if isinstance(element, Tag):
             converter = element_to_markdown_converter.get(element.name)
-
             if converter:
                 logger.debug(f"Konvertiere Element: <{element.name}> mit {converter.__name__}")
 
@@ -64,12 +67,10 @@ def convert_to_md(element, target_url):
                         markdown += convert_to_md(child, target_url)
 
             elif not element.children:
+                logger.debug("Element doesnt have any children, getting text instead")
                 text = element.get_text(strip=True)
                 if text:
                     markdown += text
-            elif element.name == "table":
-                logger.debug(f"Tabelle erkannt: <{element.name}>")
-                markdown += table_to_md(element)
 
             elif "class" in element.attrs:
                 class_list = " ".join(element["class"])
@@ -82,11 +83,13 @@ def convert_to_md(element, target_url):
                 else:
                     for child in element.children:
                         markdown += convert_to_md(child, target_url)
+            else:
+                for child in element.children:
+                    markdown += convert_to_md(child, target_url)
 
         elif isinstance(element, NavigableString):
-            text = escape_html_tags(element.strip())
-            if text:
-                markdown += text
+            logger.debug("Element ist ein navigable String: " + element)
+            markdown += element
 
         return markdown + "\n"
 
