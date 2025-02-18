@@ -71,9 +71,6 @@ def convert_to_md(element, target_url):
                 text = element.get_text(strip=True)
                 if text:
                     markdown += text
-            # elif element.name == "table":
-            #     logger.debug(f"Tabelle erkannt: <{element.name}>")
-            #     markdown += table_to_md(element)
 
             elif "class" in element.attrs:
                 class_list = " ".join(element["class"])
