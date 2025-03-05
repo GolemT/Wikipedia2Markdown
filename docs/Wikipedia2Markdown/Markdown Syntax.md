@@ -1,3 +1,7 @@
+---
+sidebar_position: 5
+---
+
 # Markdown Syntax
 
 Hier is eine kurze Ansammlung an Markdown Syntax und schreibweisen.
@@ -149,7 +153,7 @@ print("Hello, World")
 
 ## Image
 
-![Image](./static/img/DB_rgb.png)
+![Image](../../static/img/docusaurus.png)
 
 ```markdown
 ![Image](./static/img/DB_rgb.png)

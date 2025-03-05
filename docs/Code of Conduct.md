@@ -1,22 +1,10 @@
+---
+sidebar_position: 5
+---
+
 # Code of Conduct
 
 ## Arbeit im Team
-
-### Halten an Absprachen
-
-Absprachen welche im Discord oder im echten Leben (IRL) stattfinden werden eingehalten. Darunter fallen z.B.:
-
-> Jonathan:
-> Bevor irgendwas gemerged wird: fragt bitte Tim und mich nach einem Approval -- clean code policy und so
-
-> Jonathan:
-> wir nutzen alle bitte die neuste python version
-
-> Tim:
-> Ihr werdet wahrscheinlich während der Entwicklung merge konflikte bekommen. Da hilft dann ein einfacher rebase.
-
-> Jonathan:
-> -> solange das Ticket noch offen und der MR nicht erfolgreich durchgeführt / geschlossen: KEIN neues Ticket 🧐
 
 ### Issues selbstständig pullen
 
@@ -29,8 +17,6 @@ Bei Themen die alle Teammitglieder betreffen, aufkommenden Problemen, Sorgen o.�
 Probleme können immer auftreten oder es kann immer vorkommen, dass einem Fehler passiere - wir sind alle nur Menschen - diese können oft gelösst werden, wenn andere Personen mit eingebunden werden
 
 Das Einzige was nicht passieren darf, ist, dass diese Sachen verschwiegen werden.
-
->Tim und ich beißen nicht
 
 ## Code Guidelines
 
@@ -77,21 +63,6 @@ Das Einzige was nicht passieren darf, ist, dass diese Sachen verschwiegen werden
 
 * **Einheitliche Formatierung:**
   * Sorge für eine gute Lesbarkeit und Konsistenz des Codes, indem du automatische Formatierer verwendest und Coding-Konventionen einhältst.
-
-### Nutzung von KI
-
-Die Nutzung von AI ist gestattet. Allerdings nur wenn der Code auch wirklich verstanden wird bzw. wenn nicht einfach nur Copy+Paste genutzt wird. Sollte das der Fall sein **muss** der folgende Block für den Reviewer hinzugefügt werden:
-
-```python
-// Folgende Passage ist mit AI generiert worden //
-/////////////////////////////////////////////////
-fun main ():
-    print("Hello World!")
-
-//////////////////////////////////////////////
-```
-
-Diese Passage darf nach dem Review Prozess entfernt werden. Es muss dem Reviewer klar sein das diese Passage nicht durch einen Menschen geschrieben wurde und noch überprüft/umgeschrieben werden muss.
 
 ### Issue Vorgaben
 
