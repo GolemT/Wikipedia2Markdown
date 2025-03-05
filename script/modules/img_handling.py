@@ -94,7 +94,7 @@ def replace_images(element):
             url = url.split("?")[0]
 
         img_name = clean_str(url.split("/")[-1])
-        if len(img_name) > 15:
+        if len(img_name) > 15: # Begrenze Länge des Namens damit diese im MD mit den Assets übereinstimmen
             img_name = img_name[:15] + img_name[-4:]
         directory = f"./assets/{img_name}"
         md_img = f"![{img_name}]({directory})"
