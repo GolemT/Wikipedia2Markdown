@@ -20,7 +20,7 @@ log_levels = ["DEBUG", "INFO", "WARNING", "ERROR"]
 log_dropdown = customtkinter.CTkComboBox(app, values=log_levels, command=set_log_level)
 log_dropdown.pack()
 
-folder_path = os.path.abspath("./script/landing")
+folder_path = os.path.abspath("./landing")
 convert_script_path = os.path.abspath("./script/convert_main.py")
 
 linkList = []
