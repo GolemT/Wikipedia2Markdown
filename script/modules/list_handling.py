@@ -118,6 +118,13 @@ def search_child(element, target_url, depth=0):
         markdown = ""
 
         if isinstance(element, Tag):
+            if element.name == "style": # Style elemente wurden teilweise in referenzen mit Eingebunden
+                return ""
+            if "class" in element.attrs:
+                classes = set(element.attrs["class"])  # cs1 sind irgendwelche Kommentare die aber in Wikipedia selber nicht sichtbar sind direkt. Deswegen werden die explizit rausgeworfen.
+                if classes.issubset({"cs1-maint citation-comment", "cs1-code"}):
+                    return ""
+
             converter = element_to_markdown_converter.get(element.name)
             if converter:
                 logger.debug(f"Konvertiere Element: <{element.name}> in einer Liste.")
