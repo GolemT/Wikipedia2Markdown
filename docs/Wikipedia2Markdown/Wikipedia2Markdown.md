@@ -16,7 +16,7 @@ Der Sinn hinter dieser Anwendung ist es, sein eigenes Wiki zu erstellen ohne von
 
 * Jonathan Fritzsch
 * Tim Kosleck
-* Alina Kreimer
-* Juliette Louisa Möhr
 * Max Schiefer
+* Alina Kreimer
 * Jasper-Finn Schröder
+* Juliette Louisa Möhr
