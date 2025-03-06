@@ -15,9 +15,14 @@ const config: Config = {
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
 
+  markdown: {
+    mermaid: true,
+  },
+  themes: ['@docusaurus/theme-mermaid'],
+
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'GolemT', // Usually your GitHub org/user name.
+  organizationName: 'NexusCode', // Usually your GitHub org/user name.
   projectName: 'Wikipedia2Markdown', // Usually your repo name.
 
   onBrokenLinks: 'throw',
@@ -80,7 +85,7 @@ const config: Config = {
           items: [
             {
               label: 'Tutorial',
-              to: '/documents/intro',
+              to: '/docs/intro',
             },
           ],
         },
