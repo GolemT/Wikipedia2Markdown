@@ -12,7 +12,7 @@ Das Projekt kann über 3 verschiedene Wege genutzt werden. Dazu gehören eine UI
 
 Die UI wird durch die Datei ```convert_ui.py``` gestartet. Es sollte nun folgendes Window erscheinen:
 
-![Start](./assets/UI_start.png)
+![Start](./assets/wiki2mdUI1.png)
 
 Nun können die gewünschten Websites als Links in die Textbox eingefügt werden.
 
@@ -20,9 +20,11 @@ Nun können die gewünschten Websites als Links in die Textbox eingefügt werden
 Jeder Links muss einzeln eingefügt werden. Nach jedem Link muss der ```Add Link to List``` Button geklickt werden
 :::
 
+![Links in Liste](./assets/wiki2mdUI2.png)
+
 Wenn alle Websites eingetragen wurden kann der Knopf ```Convert``` gedrückt werden. Das Script wird nun die Liste an Websites abarbeiten. Dabei Freezed das Window. Nachdem die Konvertierung abgeschlossen ist, zeigt die UI eine Preview der Markdown Dateien an: 
 
-![img.png](assets/UI_end.png)
+![img.png](assets/wiki2mdUI3.png)
 
 ### CLI
 
