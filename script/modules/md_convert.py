@@ -1,4 +1,4 @@
-"""MD Convert Handling"""
+"""MD Konvertierung Verarbeitung"""
 
 import os
 from bs4 import NavigableString, Tag
@@ -7,7 +7,6 @@ from modules.text_handling import formatting_to_md, headers_to_markdown, escape_
 from modules.table_handling import table_to_md
 from modules.link_handling import link_to_md
 from modules.list_handling import list_to_md
-from modules.code_handling import code_to_md
 from modules.blockquote_handling import blockquote_to_md
 from modules.logger import global_logger as logger
 
@@ -15,7 +14,6 @@ element_to_markdown_converter = {
     "noscript": { logger.info("Skipped noscript Tag")},
     "style": { logger.info("Skipped style Tag")},
     "a": link_to_md,
-    "code": code_to_md,
     "ul": list_to_md,
     "ol": list_to_md,
     "blockquote": blockquote_to_md,
@@ -36,14 +34,14 @@ element_to_markdown_converter = {
 
 def convert_to_md(element, target_url):
     """
-    Convert a Wikipedia page parsed with BeautifulSoup into Markdown.
+    Konvertiert eine mit BeautifulSoup geparste Wikipedia-Seite in Markdown.
 
     Args:
-        element (Tag or NavigableString): HTML content from Wikipedia.
-        target_url (str): URL of the Wikipedia page.
+        element (Tag oder NavigableString): HTML-Inhalt von Wikipedia.
+        target_url (str): URL der Wikipedia-Seite.
 
     Returns:
-        str: Converted Markdown content.
+        str: Konvertierter Markdown-Inhalt.
     """
     markdown = ""
 
@@ -76,8 +74,8 @@ def convert_to_md(element, target_url):
                 class_list = " ".join(element["class"])
                 logger.debug(f"Unbekanntes HTML-Element mit Klassen: {class_list}")
 
-                if "code" in class_list:
-                    markdown += code_to_md(element)
+                if "toc" in class_list:
+                    markdown += ""  # Handle List of Contents
                 elif "mw-editsection" in class_list:
                     markdown += ""
                 else:
@@ -100,12 +98,12 @@ def convert_to_md(element, target_url):
 
 def make_md(path, title, content, target_url):
     """
-    Create a .md file and populate it with the converted content from a Wikipedia page.
+    Erstellt eine .md-Datei und füllt sie mit dem konvertierten Inhalt einer Wikipedia-Seite.
 
     Args:
-        path (str): Filepath for saving the Markdown file.
-        title (str): Title of the Wikipedia page.
-        content (str): Parsed HTML content to convert.
+        path (str): Dateipfad zum Speichern der Markdown-Datei.
+        title (str): Titel der Wikipedia-Seite.
+        content (str): Geparster HTML-Inhalt zur Konvertierung.
     """
     try:
         logger.info(f"Starte Konvertierung von '{title}' nach Markdown...")
