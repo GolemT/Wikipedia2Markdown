@@ -7,7 +7,6 @@ from modules.text_handling import formatting_to_md, headers_to_markdown, escape_
 from modules.table_handling import table_to_md
 from modules.link_handling import link_to_md
 from modules.list_handling import list_to_md
-from modules.code_handling import code_to_md
 from modules.blockquote_handling import blockquote_to_md
 from modules.logger import global_logger as logger
 
@@ -15,7 +14,6 @@ element_to_markdown_converter = {
     "noscript": { logger.info("Skipped noscript Tag")},
     "style": { logger.info("Skipped style Tag")},
     "a": link_to_md,
-    "code": code_to_md,
     "ul": list_to_md,
     "ol": list_to_md,
     "blockquote": blockquote_to_md,
@@ -76,8 +74,8 @@ def convert_to_md(element, target_url):
                 class_list = " ".join(element["class"])
                 logger.debug(f"Unbekanntes HTML-Element mit Klassen: {class_list}")
 
-                if "code" in class_list:
-                    markdown += code_to_md(element)
+                if "toc" in class_list:
+                    markdown += ""  # Handle List of Contents
                 elif "mw-editsection" in class_list:
                     markdown += ""
                 else:

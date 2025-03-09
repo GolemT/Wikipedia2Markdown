@@ -26,7 +26,7 @@ def headers_to_markdown(element):
             if element.get_text(strip=True):
                 level = int(element.name[1])
                 text = formatting_to_md(element).strip()
-                headertype = "#" * (level + 1)
+                headertype = "#" * level
                 markdown_header = headertype + " " + text + "\n"
 
                 logger.info(f"Header konvertiert: {markdown_header.strip()}")

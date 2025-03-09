@@ -9,7 +9,6 @@ from modules.text_handling import (
 )
 from modules.img_handling import replace_images
 from modules.link_handling import link_to_md
-from modules.code_handling import code_to_md
 from modules.blockquote_handling import blockquote_to_md
 from modules.table_handling import table_to_md
 
@@ -100,7 +99,6 @@ def search_child(element, target_url, depth=0):
     try:
         element_to_markdown_converter = {
             "a": link_to_md,
-            "code": code_to_md,
             "blockquote": blockquote_to_md,
             "img": replace_images,
             "u": formatting_to_md,
