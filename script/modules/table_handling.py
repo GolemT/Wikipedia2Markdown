@@ -1,4 +1,4 @@
-"""Table Handling"""
+"""Tabellenverarbeitung"""
 
 from bs4 import BeautifulSoup, NavigableString
 from modules.img_handling import replace_images
@@ -8,13 +8,13 @@ from modules.logger import global_logger as logger
 
 def table_to_md(table):
     """
-    Converts a BeautifulSoup table element to a Markdown-compatible format.
+    Konvertiert ein BeautifulSoup-Tabellenelement in ein Markdown-kompatibles Format.
 
     Args:
-        table (Tag): BeautifulSoup table element.
+        table (Tag): BeautifulSoup-Tabellenelement.
 
     Returns:
-        str: String representation of the modified table.
+        str: String-Repräsentation der modifizierten Tabelle.
     """
     try:
         if table is None:

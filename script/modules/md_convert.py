@@ -1,4 +1,4 @@
-"""MD Convert Handling"""
+"""MD Konvertierung Verarbeitung"""
 
 import os
 from bs4 import NavigableString, Tag
@@ -34,14 +34,14 @@ element_to_markdown_converter = {
 
 def convert_to_md(element, target_url):
     """
-    Convert a Wikipedia page parsed with BeautifulSoup into Markdown.
+    Konvertiert eine mit BeautifulSoup geparste Wikipedia-Seite in Markdown.
 
     Args:
-        element (Tag or NavigableString): HTML content from Wikipedia.
-        target_url (str): URL of the Wikipedia page.
+        element (Tag oder NavigableString): HTML-Inhalt von Wikipedia.
+        target_url (str): URL der Wikipedia-Seite.
 
     Returns:
-        str: Converted Markdown content.
+        str: Konvertierter Markdown-Inhalt.
     """
     markdown = ""
 
@@ -98,12 +98,12 @@ def convert_to_md(element, target_url):
 
 def make_md(path, title, content, target_url):
     """
-    Create a .md file and populate it with the converted content from a Wikipedia page.
+    Erstellt eine .md-Datei und füllt sie mit dem konvertierten Inhalt einer Wikipedia-Seite.
 
     Args:
-        path (str): Filepath for saving the Markdown file.
-        title (str): Title of the Wikipedia page.
-        content (str): Parsed HTML content to convert.
+        path (str): Dateipfad zum Speichern der Markdown-Datei.
+        title (str): Titel der Wikipedia-Seite.
+        content (str): Geparster HTML-Inhalt zur Konvertierung.
     """
     try:
         logger.info(f"Starte Konvertierung von '{title}' nach Markdown...")

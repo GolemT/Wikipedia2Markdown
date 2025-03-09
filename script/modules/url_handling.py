@@ -1,4 +1,4 @@
-"""URL Handling"""
+"""URL-Verarbeitung"""
 
 import urllib.parse
 from modules.logger import global_logger as logger
@@ -6,15 +6,15 @@ from modules.logger import global_logger as logger
 
 def url_check(element):
     """
-    Ensure proper URL formatting. If the URL already contains a query ("?"), it returns as is.
-    Otherwise, it encodes the final segment after the last slash to handle special characters,
-    reconstructing the full URL with the encoded segment.
+    Stellt die korrekte URL-Formatierung sicher. Wenn die URL bereits eine Abfrage ("?") enthält,
+    wird sie unverändert zurückgegeben. Andernfalls wird das letzte Segment nach dem letzten Schrägstrich
+    kodiert, um Sonderzeichen zu verarbeiten, und die vollständige URL mit dem kodierten Segment wieder zusammengesetzt.
 
     Args:
-        element (String): Source of a HTML element that may contain an API request.
+        element (String): Quelle eines HTML-Elements, das eine API-Anfrage enthalten kann.
 
     Returns:
-        String: Formatted URL without API requests.
+        String: Formatierte URL ohne API-Anfragen.
     """
     try:
         if not isinstance(element, str) or not element.startswith("http"):

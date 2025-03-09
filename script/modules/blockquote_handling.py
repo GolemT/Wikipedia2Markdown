@@ -5,13 +5,13 @@ from modules.logger import global_logger as logger
 
 def blockquote_to_md(element):
     """
-    Converts an HTML Blockquote element into Markdown syntax.
+    Konvertiert ein HTML-Blockquote-Element in Markdown-Syntax.
 
     Args:
-        element (Tag): The HTML blockquote element to be converted.
+        element (Tag): Das zu konvertierende HTML-Blockquote-Element.
 
     Returns:
-        str: Markdown syntax of the blockquote element.
+        str: Markdown-Syntax des Blockquote-Elements.
     """
     try:
         if element is None:

@@ -1,4 +1,4 @@
-"""Link Handling"""
+"""Link-Verarbeitung"""
 
 from modules.logger import global_logger as logger
 from modules.img_handling import replace_images
@@ -6,16 +6,16 @@ from modules.img_handling import replace_images
 
 def link_to_md(element):
     """
-    Converts an HTML anchor element into a Markdown link. If the element has a
-    class 'Wikipedia-embedded-file', it uses a document handler to replace the
-    document reference. Otherwise, it creates a Markdown link either as a MailTo
-    link if the content contains an email address or a standard link otherwise.
+    Konvertiert ein HTML-Anchor-Element in einen Markdown-Link. Wenn das Element die
+    Klasse 'Wikipedia-embedded-file' hat, verwendet es einen Dokumentenhandler, um die
+    Dokumentreferenz zu ersetzen. Andernfalls erstellt es einen Markdown-Link entweder als
+    MailTo-Link, wenn der Inhalt eine E-Mail-Adresse enthält, oder als Standardlink.
 
     Args:
-        element (Tag): A link element from the Wikipedia page.
+        element (Tag): Ein Link-Element von der Wikipedia-Seite.
 
     Returns:
-        str: Markdown-formatted link.
+        str: Markdown-formatierter Link.
     """
     try:
         if element is None:

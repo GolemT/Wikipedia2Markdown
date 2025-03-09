@@ -1,4 +1,4 @@
-"""Image Handling"""
+"""Bildverarbeitung"""
 
 import os
 import requests
@@ -10,14 +10,14 @@ classes = ["avatar", "emoticons"]
 
 def check_class(element):
     """
-    Checks if any predefined class names are present in the 'class' attribute of the given element.
-    Returns True if a matching class is found, otherwise False.
+    Überprüft, ob vordefinierte Klassennamen im 'class'-Attribut des gegebenen Elements vorhanden sind.
+    Gibt True zurück, wenn eine übereinstimmende Klasse gefunden wird, andernfalls False.
 
     Args:
-        element (Tag): img element to be checked.
+        element (Tag): Zu überprüfendes img-Element.
 
     Returns:
-        bool: Whether certain classes are within the element or not.
+        bool: Ob bestimmte Klassen im Element enthalten sind oder nicht.
     """
     if element.attrs.get("class"):
         for item in classes:
@@ -29,13 +29,13 @@ def check_class(element):
 
 def get_images(element, title):
     """
-    Retrieves and downloads all images from a given HTML element, excluding those
-    with specific classes. Images are saved to a designated assets directory, and
-    filenames are sanitized and stripped of query parameters.
+    Ruft alle Bilder von einem gegebenen HTML-Element ab und lädt sie herunter, mit Ausnahme derer
+    mit bestimmten Klassen. Bilder werden in einem bestimmten Assets-Verzeichnis gespeichert, und
+    Dateinamen werden bereinigt und von Abfrageparametern befreit.
 
     Args:
-        element (Tag): An img element found in the Wikipedia page.
-        title (str): Filename to save pictures to the correct folder.
+        element (Tag): Ein in der Wikipedia-Seite gefundenes img-Element.
+        title (str): Dateiname, um Bilder im richtigen Ordner zu speichern.
     """
     try:
         image_tags = element.find_all("img")
@@ -78,15 +78,15 @@ def get_images(element, title):
 
 def replace_images(element):
     """
-    Processes an image element to create a Markdown image link. Strips query parameters
-    from the URL, sanitizes the filename, and handles any nested textual elements as
-    captions or additional descriptions.
+    Verarbeitet ein Bildelement, um einen Markdown-Bildlink zu erstellen. Entfernt Abfrageparameter
+    aus der URL, bereinigt den Dateinamen und behandelt alle verschachtelten Textelemente als
+    Beschriftungen oder zusätzliche Beschreibungen.
 
     Args:
-        element (Tag): The image element that needs to be converted.
+        element (Tag): Das zu konvertierende Bildelement.
 
     Returns:
-        str: Markdown Syntax of images.
+        str: Markdown-Syntax von Bildern.
     """
     try:
         url = element.attrs.get("src", "")
