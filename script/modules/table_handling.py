@@ -26,11 +26,14 @@ def table_to_md(table):
         if "style" in table.attrs:
             del table["style"]
 
+        for element in table.find_all('style'):
+            element.decompose()
+
         to_process = table.find_all(True)
 
         for element in to_process:
-            if element.attrs and element.has_attr("style"):
-                del element["style"]
+            if 'style' in element.attrs:
+                del element['style']
 
             if element.name == "img":
                 logger.info("Bild in Tabelle gefunden, wird ersetzt...")

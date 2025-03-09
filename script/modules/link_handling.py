@@ -21,7 +21,9 @@ def link_to_md(element):
         if element is None:
             logger.warning("Link-Element ist None, wird ignoriert.")
             return ""
-        elif "mw-jump-link" in element["class"]:
+
+        if "class" in element.attrs and 'mw-jump-link' in element["class"]:
+            logger.info("Link-Element hat class, wird ignoriert.")
             return ""
 
         logger.debug(f"Verarbeite Link: {element.get_text(strip=True)}")
