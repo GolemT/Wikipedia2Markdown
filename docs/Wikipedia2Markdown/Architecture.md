@@ -18,7 +18,6 @@ erDiagram
     
     MD_CONVERT ||--|| TABLE_HANDLING : calls
     MD_CONVERT ||--|| BLOCKQUOTE_HANDLING : calls
-    MD_CONVERT ||--|| CODE_HANDLING : calls
     MD_CONVERT ||--|| IMG_HANDLING : calls
     MD_CONVERT ||--|| LINK_HANDLING : calls
     MD_CONVERT ||--|| LIST_HANDLING : calls
@@ -30,7 +29,6 @@ erDiagram
     LIST_HANDLING ||--|| TEXT_HANDLING : calls
     LIST_HANDLING ||--|| IMG_HANDLING : calls
     LIST_HANDLING ||--|| LINK_HANDLING : calls
-    LIST_HANDLING ||--|| CODE_HANDLING : calls
     LIST_HANDLING ||--|| BLOCKQUOTE_HANDLING : calls
     LIST_HANDLING ||--|| TABLE_HANDLING : calls
     
@@ -45,7 +43,6 @@ erDiagram
     TABLE_HANDLING ||--|| LOGGER: calls
     IMG_HANDLING ||--|| LOGGER: calls
     BLOCKQUOTE_HANDLING ||--|| LOGGER: calls
-    CODE_HANDLING ||--|| LOGGER: calls
     LINK_HANDLING ||--|| LOGGER: calls
     LIST_HANDLING ||--|| LOGGER: calls
     TEXT_HANDLING ||--|| LOGGER : calls
