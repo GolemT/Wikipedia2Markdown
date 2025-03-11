@@ -1,6 +1,6 @@
 """
-Script File to Convert a Wikipedia Page into Markdown
-so that it can be used in a docusaurus implementation
+Skript-Datei zum Konvertieren einer Wikipedia-Seite in Markdown,
+damit sie in einer Docusaurus-Implementierung verwendet werden kann.
 """
 
 
@@ -42,14 +42,14 @@ except requests.exceptions.RequestException as e:
 
 def truncate_string(string, max_length=50):
     """
-    Truncate the input string to a specified maximum length.
+    Kürzt den Eingabe-String auf eine angegebene maximale Länge.
 
     Args:
-        string (str): The input string to be truncated.
-        max_length (int): The maximum length of the truncated string.
+        string (str): Der zu kürzende Eingabe-String.
+        max_length (int): Die maximale Länge des gekürzten Strings.
 
     Returns:
-        str: The truncated string.
+        str: Der gekürzte String.
     """
     if len(string) <= max_length:
         return string
@@ -58,8 +58,8 @@ def truncate_string(string, max_length=50):
 
 def url_to_html():
     """
-    Fetches the HTML content of the target URL using requests and
-    parses it into a BeautifulSoup object.
+    Ruft den HTML-Inhalt der Ziel-URL mit Requests ab und
+    wandelt ihn in ein BeautifulSoup-Objekt um.
     """
     try:
         soup = BeautifulSoup(response.content, "html.parser")

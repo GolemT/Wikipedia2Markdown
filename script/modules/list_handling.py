@@ -1,4 +1,4 @@
-"""List Handling"""
+"""Listenverarbeitung"""
 
 from bs4 import NavigableString, Tag
 from modules.logger import global_logger as logger
@@ -9,22 +9,21 @@ from modules.text_handling import (
 )
 from modules.img_handling import replace_images
 from modules.link_handling import link_to_md
-from modules.code_handling import code_to_md
 from modules.blockquote_handling import blockquote_to_md
 from modules.table_handling import table_to_md
 
 
 def list_to_md(input, target_url, ebene=0):
     """
-    Converts an unordered list element on the Wikipedia Page to Markdown.
+    Konvertiert ein ungeordnetes Listenelement auf der Wikipedia-Seite in Markdown.
 
     Args:
-        input (Tag): The list element that needs to be converted.
-        target_url (str): The target URL for handling special elements.
-        ebene (int, optional): Depth of the list (used for indentation). Defaults to 0.
+        input (Tag): Das zu konvertierende Listenelement.
+        target_url (str): Die Ziel-URL zur Behandlung spezieller Elemente.
+        ebene (int, optional): Tiefe der Liste (wird zur Einrückung verwendet). Standardmäßig 0.
 
     Returns:
-        str: Markdown Syntax for unordered lists.
+        str: Markdown-Syntax für ungeordnete Listen.
     """
     try:
         if input.name == "ol":
@@ -52,15 +51,15 @@ def list_to_md(input, target_url, ebene=0):
 
 def ordered_list_to_md(input, target_url, depth):
     """
-    Converts an ordered list element on the Wikipedia Page to Markdown.
+    Konvertiert ein geordnetes Listenelement auf der Wikipedia-Seite in Markdown.
 
     Args:
-        input (Tag): The ordered list element.
-        target_url (str): The target URL for handling special elements.
-        depth (int): Depth of the list for indentation.
+        input (Tag): Das geordnete Listenelement.
+        target_url (str): Die Ziel-URL zur Behandlung spezieller Elemente.
+        depth (int): Tiefe der Liste zur Einrückung.
 
     Returns:
-        str: Markdown Syntax for ordered lists.
+        str: Markdown-Syntax für geordnete Listen.
     """
     try:
         logger.debug(f"Konvertiere geordnete Liste auf Ebene {depth}...")
@@ -87,20 +86,19 @@ def ordered_list_to_md(input, target_url, depth):
 
 def search_child(element, target_url, depth=0):
     """
-    Searches recursively within an element and converts it to Markdown.
+    Durchsucht rekursiv ein Element und konvertiert es in Markdown.
 
     Args:
-        element (Tag | NavigableString): The element to be converted.
-        target_url (str): The target URL for handling special elements.
-        depth (int, optional): Current depth of recursion. Defaults to 0.
+        element (Tag | NavigableString): Das zu konvertierende Element.
+        target_url (str): Die Ziel-URL zur Behandlung spezieller Elemente.
+        depth (int, optional): Aktuelle Rekursionstiefe. Standardmäßig 0.
 
     Returns:
-        str: Converted Markdown string.
+        str: Konvertierter Markdown-String.
     """
     try:
         element_to_markdown_converter = {
             "a": link_to_md,
-            "code": code_to_md,
             "blockquote": blockquote_to_md,
             "img": replace_images,
             "u": formatting_to_md,
@@ -145,11 +143,9 @@ def search_child(element, target_url, depth=0):
                 logger.debug("Geordnete Liste in einer Liste erkannt, wird rekursiv konvertiert...")
                 markdown += "\n" + ordered_list_to_md(element, target_url, depth + 1)
             elif not converter and element.children:
-                if "class" in element.attrs and "code" in " ".join(element["class"]):
-                    markdown += code_to_md(element)
-                else:
-                    for child in element.children:
-                        markdown += search_child(child, target_url, depth)
+                for child in element.children:
+                    markdown += search_child(child, target_url, depth)
+
         elif isinstance(element, NavigableString):
             text = element.strip()
             text = escape_html_tags(text)

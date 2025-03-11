@@ -5,9 +5,23 @@ import queue
 import sys
 
 class Logger:
+    """
+        Ein flexibler Logger, der Nachrichten in der Konsole anzeigt und/oder in Dateien speichert.
+        Unterstützt verschiedene Log-Level und asynchrone Verarbeitung.
+    """
     LEVELS = {"DEBUG": 1, "INFO": 2, "WARNING": 3, "ERROR": 4}
 
     def __init__(self, level="INFO", log_to_file=True, log_dir=".logs", show_cli=True):
+        """
+        Initialisiert den Logger.
+
+        Args:
+            level (str): Das minimale Log-Level, das protokolliert werden soll.
+            log_to_file (bool): Gibt an, ob Logs in eine Datei geschrieben werden sollen.
+            log_dir (str): Das Verzeichnis, in dem Log-Dateien gespeichert werden.
+            show_cli (bool): Gibt an, ob Logs in der Konsole angezeigt werden sollen.
+        """
+
         self.level = level
         self.log_to_file = log_to_file
         self.log_dir = log_dir
@@ -56,6 +70,13 @@ class Logger:
         print("[Logger] Alle Logs gespeichert. Logger beendet.")
 
     def log(self, level, message):
+        """
+        Protokolliert eine Nachricht mit dem angegebenen Log-Level.
+
+        Args:
+            level (str): Das Log-Level der Nachricht.
+            message (str): Die zu protokollierende Nachricht.
+        """
         if self.LEVELS[level] >= self.LEVELS[self.level]:
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             self.queue.put((level, message, timestamp))

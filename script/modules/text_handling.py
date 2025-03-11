@@ -1,4 +1,4 @@
-"""Text Handling"""
+"""Textverarbeitung"""
 
 import re
 from bs4 import Tag
@@ -7,13 +7,13 @@ from modules.logger import global_logger as logger
 
 def headers_to_markdown(element):
     """
-    Converts HTML header elements (h1 to h6) to their equivalent Markdown format.
+    Konvertiert HTML-Überschriftenelemente (h1 bis h6) in ihr äquivalentes Markdown-Format.
 
     Args:
-        element (Tag): HTML header element.
+        element (Tag): HTML-Überschriftenelement.
 
     Returns:
-        String | None: Markdown header or None if not processable.
+        String | None: Markdown-Überschrift oder None, wenn nicht verarbeitbar.
     """
     try:
         if element.name in ["h1", "h2", "h3", "h4", "h5", "h6"]:
@@ -26,7 +26,7 @@ def headers_to_markdown(element):
             if element.get_text(strip=True):
                 level = int(element.name[1])
                 text = formatting_to_md(element).strip()
-                headertype = "#" * (level + 1)
+                headertype = "#" * level
                 markdown_header = headertype + " " + text + "\n"
 
                 logger.info(f"Header konvertiert: {markdown_header.strip()}")
@@ -41,13 +41,13 @@ def headers_to_markdown(element):
 
 def formatting_to_md(element):
     """
-    Converts HTML formatting elements (s, strong, u, em) to their Markdown or HTML equivalents.
+    Konvertiert HTML-Formatierungselemente (s, strong, u, em) in ihre Markdown- oder HTML-Äquivalente.
 
     Args:
-        element (Tag): HTML element with formatted text.
+        element (Tag): HTML-Element mit formatiertem Text.
 
     Returns:
-        String: Markdown formatted text.
+        String: Markdown-formatierter Text.
     """
     try:
         format_symbol = ""
@@ -80,13 +80,13 @@ def formatting_to_md(element):
 
 def clean_str(element):
     """
-    Cleans a string by removing special characters and replacing spaces with underscores.
+    Bereinigt einen String, indem Sonderzeichen entfernt und Leerzeichen durch Unterstriche ersetzt werden.
 
     Args:
-        element (str): Input string with special characters.
+        element (str): Eingabe-String mit Sonderzeichen.
 
     Returns:
-        str: Cleaned string.
+        str: Bereinigter String.
     """
     try:
         regex_pattern = r"[^a-zA-Z0-9\s\.]"
@@ -101,13 +101,13 @@ def clean_str(element):
 
 def escape_html_tags(text):
     """
-    Escapes HTML tags by replacing '<' and '>' with their HTML entities.
+    Maskiert HTML-Tags, indem '<' und '>' durch ihre HTML-Entities ersetzt werden.
 
     Args:
-        text (str): Text containing HTML elements.
+        text (str): Text mit HTML-Elementen.
 
     Returns:
-        str: Escaped text.
+        str: Maskierter Text.
     """
     try:
         wip_text = re.sub(r"<", "&lt;", text)
