@@ -21,7 +21,7 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/docs/Wikipedia2Markdown">
-            Lets get started!
+            👉🏻 To Wiki 👈🏻
           </Link>
         </div>
       </div>
